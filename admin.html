@@ -1049,7 +1049,7 @@ const app = initializeApp(firebaseConfig);
                 } else {
                     // Not an authorized admin
                     signOut(auth); // Sign out the non-admin user
-                    showLoginError('Access Denied: You are not an authorized administrator.');
+                    showLoginError('Access Denied: You are not an authorized administrator. Please ensure your user ID is added to the "admins" node in your Firebase Realtime Database and set to `true`.');
                     adminLoginScreen.classList.remove('hidden');
                     adminDashboardLayout.classList.add('hidden');
                     adminDashboardLayout.classList.remove('flex');
@@ -1279,7 +1279,7 @@ const app = initializeApp(firebaseConfig);
                 modalDeliveryAddress.innerHTML = `N/A (Digital Product)<br>Access details sent to: ${order.address?.email || order.userId}`;
             } else {
                 modalAddressSection.classList.remove('hidden');
-                modalDeliveryAddress.innerHTML = `${order.address?.addressLine1 || ''}, ${order.address?.addressLine2 || ''}<br>${order.address?.city || ''}, ${order.address?.state || ''} - ${order.address?.pincode || ''}<br>Mobile: ${order.address?.mobileNumber || ''}`;
+                modalDeliveryAddress.innerHTML = `${order.address?.addressLine1 || ''}, ${order.address?.addressLine2 || ''}<br>${order.address?.city || '', order.address?.state || ''} - ${order.address?.pincode || ''}<br>Mobile: ${order.address?.mobileNumber || ''}`;
             }
 
 
@@ -1294,7 +1294,7 @@ const app = initializeApp(firebaseConfig);
                     <img src="${item.image || `https://picsum.photos/50/50?random=${item.productId}`}" alt="${item.name}" class="w-12 h-12 object-contain rounded">
                     <div>
                         <p class="font-semibold">${item.name}</p>
-                        <p class="text-sm text-gray-600">Qty: ${item.quantity} | ₹${parseFloat(item.price.replace(/,/g, '')).toLocaleString('en-IN')} <span class="ml-1 px-1 py-0.5 bg-gray-100 text-xs rounded">${item.type === 'digital' ? 'Digital' : 'Physical'}</span></p>
+                        <p class="text-sm text-gray-600">Qty: ${item.quantity} | ₹${parseFloat(item.price).toLocaleString('en-IN')} <span class="ml-1 px-1 py-0.5 bg-gray-100 text-xs rounded">${item.type === 'digital' ? 'Digital' : 'Physical'}</span></p>
                     </div>
                 </div>
             `).join('');

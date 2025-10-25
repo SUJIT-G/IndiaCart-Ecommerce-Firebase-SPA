@@ -68,52 +68,11 @@ IndiaCart is a comprehensive, mobile-first E-commerce Single-Page Application (S
 
 1.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/YOUR_USERNAME/IndiaCart-Ecommerce-Firebase-SPA.git
+    git clone https://sujit-g.github.io/IndiaCart-Ecommerce-Firebase-SPA/
     cd IndiaCart-Ecommerce-Firebase-SPA
     ```
 
-2.  **Firebase Project Setup:**
-    *   Go to the [Firebase Console](https://console.firebase.google.com/).
-    *   Create a new Firebase project.
-    *   Add a web app to your project and copy your Firebase configuration.
-    *   Enable the following Firebase services:
-        *   **Authentication:** Enable "Email/Password" sign-in method.
-        *   **Realtime Database:** Start in "test mode" or set up appropriate security rules.
-        *   **Storage:** Set up security rules to allow read/write for authenticated users.
 
-3.  **Update Firebase Configuration:**
-    *   Open `index.html` and `admin.html`.
-    *   Locate the `firebaseConfig` object in the `<script type="module">` section.
-    *   Replace `YOUR_FIREBASE_API_KEY`, `YOUR_FIREBASE_AUTH_DOMAIN`, etc., with your actual Firebase project's configuration values. Ensure `databaseURL` is in the format `https://YOUR_FIREBASE_PROJECT_ID.firebaseio.com`.
-
-4.  **Seed Admin User (Important!):**
-    *   After setting up Firebase and updating `admin.html`, create an admin user:
-        1.  Open `admin.html` in your browser.
-        2.  Log in using the email and password you intend for your admin. This user account will be created in Firebase Authentication.
-        3.  Go to the Firebase Realtime Database in your Firebase Console.
-        4.  Manually create a node named `admins`.
-        5.  Inside `admins`, add a new child node with the `uid` (User ID) of the user you just logged in with, and set its value to `true`.
-           *   Example:
-               ```json
-               {
-                 "admins": {
-                   "YOUR_ADMIN_UID": true
-                 }
-               }
-               ```
-        *   This step is crucial for the admin panel's access control. Only users with their UID explicitly listed under `admins` as `true` will be granted access.
-
-5.  **PayPal Client ID (Customer App):**
-    *   In `index.html`, locate the PayPal SDK script tag.
-    *   Replace `YOUR_DUMMY_PAYPAL_CLIENT_ID_HERE` with your actual PayPal client ID if you intend to implement real payments. For demonstration, the dummy ID suffices, and the payment logic is simulated.
-
----
-
-## Usage
-
-### For Customers (`index.html`)
-
-Open `index.html` directly in your browser or deploy it via GitHub Pages.
 
 *   **Browse Products:** Navigate through categories, use the search bar, or explore carousels.
 *   **Login/Signup:** Access your profile, cart, and wishlist.
@@ -121,36 +80,6 @@ Open `index.html` directly in your browser or deploy it via GitHub Pages.
 *   **Checkout:** Proceed from the cart to enter address details and simulate payment.
 *   **Profile:** Manage your details, view orders, and for sellers, access the seller dashboard.
 
-### For Administrators (`admin.html`)
-
-Open `admin.html` directly in your browser.
-
-*   **Login:** Use the Firebase account configured as an admin in your Firebase Realtime Database.
-*   **Dashboard:** View key metrics.
-*   **Manage Data:** Use the sidebar navigation to access sections for Products, Orders, Banners, Categories, Users, and Sellers. Perform CRUD operations as needed.
-
----
-
-## Deployment to GitHub Pages
-
-1.  **Create a New GitHub Repository:** Go to `github.com/new` and create a new public repository (e.g., `IndiaCart-Ecommerce-Firebase-SPA`).
-2.  **Push Your Code:**
-    ```bash
-    git init
-    git add .
-    git commit -m "Initial commit: IndiaCart E-commerce App"
-    git branch -M main
-    git remote add origin https://github.com/YOUR_USERNAME/IndiaCart-Ecommerce-Firebase-SPA.git
-    git push -u origin main
-    ```
-3.  **Enable GitHub Pages:**
-    *   On your GitHub repository page, go to **Settings > Pages**.
-    *   Under "Build and deployment", select "Deploy from a branch".
-    *   For "Branch", choose `main` and `/ (root)` for the folder.
-    *   Click "Save".
-    *   GitHub Pages will build and deploy your site. The URL will typically be `https://YOUR_USERNAME.github.io/YOUR_REPOSITORY_NAME/`. It might take a few minutes for the deployment to complete.
-
----
 
 ## Contributing
 
@@ -166,7 +95,8 @@ This project is licensed under the MIT License - see the `LICENSE.md` file for d
 
 ## Contact
 
-*   Your Name/Handle - [Your GitHub Profile](https://github.com/YOUR_USERNAME)
-*   Project Link: `https://github.com/YOUR_USERNAME/IndiaCart-Ecommerce-Firebase-SPA`
-*   Deployed Customer App: `https://YOUR_USERNAME.github.io/IndiaCart-Ecommerce-Firebase-SPA/index.html`
-*   Deployed Admin Panel: `https://YOUR_USERNAME.github.io/IndiaCart-Ecommerce-Firebase-SPA/admin.html`
+*   Your Name/Handle - [Your GitHub Profile](#)
+*   Project Link: `https://sujit-g.github.io/IndiaCart-Ecommerce-Firebase-SPA/`
+*   Deployed Customer App: `  Project Link: `https://sujit-g.github.io/IndiaCart-Ecommerce-Firebase-SPA/index.html`
+*  
+*   Deployed Admin Panel: `  Project Link: `https://sujit-g.github.io/IndiaCart-Ecommerce-Firebase-SPA/admin.html`

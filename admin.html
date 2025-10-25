@@ -822,7 +822,12 @@
             deleteObject, // For deleting images if needed
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-        // Import the functions you need from the SDKs you need
+        // =====================================================================================
+        // IMPORTANT: FIREBASE CONFIGURATION & DATABASE RULES
+        // =====================================================================================
+
+        // 1. Firebase Configuration:
+      // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -840,6 +845,97 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+        // 2. Firebase Realtime Database Security Rules:
+        
+        /*
+        {
+          "rules": {
+            "users": {
+              "$uid": {
+                // Authenticated users can read/write their own profile
+                ".read": "auth != null && auth.uid == $uid || root.child('admins').child(auth.uid).val() === true",
+                ".write": "auth != null && auth.uid == $uid || root.child('admins').child(auth.uid).val() === true",
+                "profile": {
+                  ".read": "auth != null && auth.uid == $uid || root.child('admins').child(auth.uid).val() === true",
+                  ".write": "auth != null && auth.uid == $uid || root.child('admins').child(auth.uid).val() === true"
+                }
+              }
+            },
+            "admins": {
+              // Admins node itself: read by any authenticated user to check admin status
+              ".read": "auth != null",
+              // Write to the admins node only by existing admin (or manually in console)
+              ".write": "root.child('admins').child(auth.uid).val() === true"
+            },
+            "products": {
+              // Products can be read by anyone
+              ".read": true,
+              // Products can only be written (add/edit/delete) by an admin or the product's assigned seller
+              ".write": "root.child('admins').child(auth.uid).val() === true || (auth != null && newData.child('sellerId').val() == auth.uid)",
+              "$productId": {
+                // Specific product. Seller can only write if it's their product.
+                ".write": "root.child('admins').child(auth.uid).val() === true || (auth != null && data.child('sellerId').val() == auth.uid)"
+              }
+            },
+            "banners": {
+              // Banners can be read by anyone
+              ".read": true,
+              // Banners can only be written by an admin
+              ".write": "root.child('admins').child(auth.uid).val() === true"
+            },
+            "categories": {
+              // Categories can be read by anyone
+              ".read": true,
+              // Categories can only be written by an admin
+              ".write": "root.child('admins').child(auth.uid).val() === true"
+            },
+            "carts": {
+              "$uid": {
+                // Carts can be read/written only by the authenticated user who owns it
+                ".read": "auth != null && auth.uid == $uid",
+                ".write": "auth != null && auth.uid == $uid"
+              }
+            },
+            "favorites": {
+              "$uid": {
+                // Favorites can be read/written only by the authenticated user who owns it
+                ".read": "auth != null && auth.uid == $uid",
+                ".write": "auth != null && auth.uid == $uid"
+              }
+            },
+            "orders": {
+              // Overall orders: Admins can read all orders
+              ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+              // Authenticated users can write their own orders (on placement). Admins can write all.
+              ".write": "auth != null && (newData.child('userId').val() == auth.uid || root.child('admins').child(auth.uid).val() === true)",
+              "$uid": {
+                // Specific user's orders: Authenticated user can read/write their own orders. Admins can read/write all.
+                ".read": "auth != null && (auth.uid == $uid || root.child('admins').child(auth.uid).val() === true)",
+                ".write": "auth != null && (auth.uid == $uid || root.child('admins').child(auth.uid).val() === true)"
+              }
+            }
+          }
+        }
+        */
+
+        // 3. Admin User Setup:
+        //    After you log in with an email/password in the admin panel, an account will be created in Firebase Authentication.
+        //    To grant this user admin access, you MUST manually add their UID to your Realtime Database:
+        //    - Create a node named "admins" at the root of your database.
+        //    - Inside "admins", add a new child with the UID (User ID) of your admin user as the key, and set its value to 'true'.
+        //      Example:
+        //      {
+        //        "admins": {
+        //          "your_admin_user_uid_here": true
+        //        }
+        //      }
+        //    You can find a user's UID in the Firebase Console under "Authentication".
+        // =====================================================================================
+
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const database = getDatabase(app);
         const storage = getStorage(app); // Not explicitly used for uploads in admin, but good to have
@@ -1033,6 +1129,7 @@ const app = initializeApp(firebaseConfig);
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 // User is logged in, check if they are an admin
+                // This read operation *requires* your database rules to allow authenticated users to read the 'admins' node.
                 const adminRef = ref(database, `admins/${user.uid}`);
                 const snapshot = await get(adminRef); // Use get() for one-time check
                 if (snapshot.exists() && snapshot.val() === true) {
@@ -1049,7 +1146,12 @@ const app = initializeApp(firebaseConfig);
                 } else {
                     // Not an authorized admin
                     signOut(auth); // Sign out the non-admin user
-                    showLoginError('Access Denied: You are not an authorized administrator. Please ensure your user ID is added to the "admins" node in your Firebase Realtime Database and set to `true`.');
+                    showLoginError(
+                        'Access Denied: You are not an authorized administrator. ' +
+                        'Please ensure your Firebase `firebaseConfig` is correct, ' +
+                        'and your user ID is added to the "admins" node in your Firebase Realtime Database and set to `true`. ' +
+                        'Also, double-check your Realtime Database Security Rules allow reading the `admins` node for authenticated users.'
+                    );
                     adminLoginScreen.classList.remove('hidden');
                     adminDashboardLayout.classList.add('hidden');
                     adminDashboardLayout.classList.remove('flex');
@@ -1120,7 +1222,7 @@ const app = initializeApp(firebaseConfig);
                     Object.keys(userOrders).forEach(orderId => {
                         const order = { ...userOrders[orderId], userId: userId };
                         allOrders.push(order);
-                        if (order.status !== 'cancelled') {
+                        if (order.status !== 'cancelled' && order.status !== 'placed') { // Only count earnings for processed orders
                             totalEarnings += order.total;
                         }
                         if (new Date(order.orderDate).toDateString() === today) {
@@ -1326,12 +1428,9 @@ const app = initializeApp(firebaseConfig);
                 const currentOrder = snapshot.val();
                 if (currentOrder) {
                     const statusHistory = currentOrder.statusHistory || {};
-                    // Only update timestamp if status actually changes or it's a new entry
-                    if (currentOrder.status !== newStatus || !statusHistory[newStatus]) {
-                        statusHistory[newStatus] = serverTimestamp();
-                    }
-
-
+                    // Always update timestamp for the new status
+                    statusHistory[newStatus] = serverTimestamp();
+                    
                     await update(orderRef, {
                         status: newStatus,
                         statusHistory: statusHistory,
@@ -1352,18 +1451,25 @@ const app = initializeApp(firebaseConfig);
             // Set filters if coming from seller page
             productCategoryFilter.value = 'all';
             productTypeFilter.value = 'all';
-            if (filterSellerId) {
-                productSellerSelect.value = filterSellerId; // Pre-select seller if provided
-            } else {
-                productSellerSelect.value = ''; // Default to Platform
+            
+            // Set product seller filter
+            const productSellerFilter = document.getElementById('product-seller-filter'); // Assuming a filter element exists
+            if (productSellerFilter) {
+                if (filterSellerId) {
+                    productSellerFilter.value = filterSellerId;
+                } else {
+                    productSellerFilter.value = ''; // Default to "Platform" filter
+                }
             }
+
+
             displayProductsTable();
         }
 
         function displayProductsTable() {
             const selectedCategory = productCategoryFilter.value;
             const selectedType = productTypeFilter.value;
-            const selectedSeller = productSellerSelect.value;
+            const selectedSeller = productSellerSelect.value; // For the filter in product table header.
             let filteredProducts = allProducts;
 
             if (selectedCategory !== 'all') {
@@ -1375,7 +1481,7 @@ const app = initializeApp(firebaseConfig);
             if (selectedSeller) {
                 filteredProducts = filteredProducts.filter(product => product.sellerId === selectedSeller);
             } else {
-                // If 'Platform' is selected, filter for products with no sellerId
+                // If 'Platform' (empty value) is selected, filter for products with no sellerId or explicitly null/undefined
                 filteredProducts = filteredProducts.filter(product => !product.sellerId);
             }
 
@@ -1409,7 +1515,30 @@ const app = initializeApp(firebaseConfig);
 
         productCategoryFilter.addEventListener('change', displayProductsTable);
         productTypeFilter.addEventListener('change', displayProductsTable);
-        productSellerSelect.addEventListener('change', displayProductsTable);
+        productSellerSelect.addEventListener('change', displayProductsTable); // This is actually for the form, not the filter.
+
+        // Correct filter for product table. Added an explicit filter dropdown for sellers here.
+        const productsPageSellerFilter = document.createElement('div');
+        productsPageSellerFilter.innerHTML = `
+            <label for="product-seller-filter" class="mr-2">Filter by Seller:</label>
+            <select id="product-seller-filter" class="p-2 border rounded-md">
+                <option value="">All Sellers (Platform)</option>
+                <!-- Sellers will be injected here -->
+            </select>
+        `;
+        document.querySelector('#products-page .mb-4.flex.space-x-4').appendChild(productsPageSellerFilter);
+        const productSellerFilterDropdown = document.getElementById('product-seller-filter');
+
+        // Update the seller filter dropdown options (for products page table)
+        function renderProductSellerFilterOptions() {
+            const sellerOptions = allUsers.filter(u => u.isSeller).map(s => `<option value="${s.uid}">${s.sellerName || s.email}</option>`).join('');
+            productSellerFilterDropdown.innerHTML = `<option value="">Platform (No Seller)</option>${sellerOptions}`;
+            productSellerFilterDropdown.addEventListener('change', displayProductsTable); // Add event listener here
+        }
+        // Call this when allUsers data updates
+        if (userDataListener) { // Make sure the listener is set up
+            onValue(ref(database, 'users'), renderProductSellerFilterOptions); // Attach this to user data changes
+        }
 
 
         addProductBtn.addEventListener('click', () => openProductForm());
@@ -1740,8 +1869,8 @@ const app = initializeApp(firebaseConfig);
                     // If reactivating, ensure sellerName is set if it was previously cleared or missing
                     const snapshot = await get(userProfileRef);
                     const profile = snapshot.val();
-                    if (!profile.sellerName) {
-                        updateData.sellerName = profile.name || profile.email.split('@')[0]; // Default seller name
+                    if (!profile || !profile.sellerName) { // Check if profile exists and sellerName is missing
+                        updateData.sellerName = profile?.name || profile?.email?.split('@')[0] || 'New Seller'; // Default seller name
                     }
                 }
                 await update(userProfileRef, updateData);
@@ -1817,6 +1946,7 @@ const app = initializeApp(firebaseConfig);
 
             // Initial setup for product filters and form selects
             productTypeFilter.value = 'all'; // Default
+            renderProductSellerFilterOptions(); // Populate seller filter dropdown initially
         }
 
         init();

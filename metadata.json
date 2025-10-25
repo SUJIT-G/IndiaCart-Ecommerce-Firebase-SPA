@@ -1,0 +1,9 @@
+{
+  "name": "IndiaCart E-commerce Customer App",
+  "description": "A mobile-first, single-page e-commerce application for customers to browse products, manage their cart, make purchases, and view their profile and orders. Integrates with Firebase for authentication and data management.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

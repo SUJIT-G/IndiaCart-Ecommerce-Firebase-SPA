@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndiaCart - Your Online Shopping Destination</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Custom CSS Variables for Theming */
+        :root {
+            --primary-color: #ef4444; /* Red-like shade */
+            --primary-dark: #dc2626;
+            --primary-light: #f87171;
+            --accent-color: #fdd835; /* Yellow for highlights */
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f3f6;
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+            min-height: 100vh; /* Ensure content pushes footer to bottom */
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex-grow: 1; /* Allow main content to expand */
+        }
+        .page {
+            display: none;
+            padding-bottom: 70px; /* Space for fixed bottom nav */
+        }
+        .page.active {
+            display: block;
+        }
+
+        /* Utility classes using variables */
+        .bg-primary { background-color: var(--primary-color); }
+        .text-primary { color: var(--primary-color); }
+        .hover\:bg-primary-dark:hover { background-color: var(--primary-dark); }
+        .focus\:ring-primary-light:focus { ring-color: var(--primary-light); }
+        .border-primary { border-color: var(--primary-color); }
+
+        .bg-accent { background-color: var(--accent-color); }
+        .text-accent { color: var(--accent-color); }
+        .hover\:bg-accent-dark:hover { background-color: #fbc02d; } /* Darker yellow */
+
+        /* Sticky header and footer */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .sticky-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+        }
+
+        /* Carousel scrollbar hiding */
+        .carousel-container {
+            scrollbar-width: none; /* Firefox */
+        }
+        .carousel-container::-webkit-scrollbar {
+            display: none; /* Safari and Chrome */
+        }
+
+        /* Modals */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 1000; /* Higher z-index for modals */
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto; /* Allow scrolling if content is too tall */
+        }
+        .modal-overlay.flex {
+            display: flex;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            max-width: 90%;
+            width: 500px; /* Max width for larger screens */
+            position: relative;
+            margin: 1rem; /* Space around modal on small screens */
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            font-size: 1.75rem;
+            line-height: 1;
+            color: #9ca3af;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .modal-close-btn:hover {
+            color: #4b5563;
+        }
+
+        /* Track Order Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px; /* Space for line and icons */
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #e5e7eb;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+        }
+        .timeline-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .timeline-item-icon {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background-color: #fff;
+            border: 2px solid #e5e7eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 14px;
+            transform: translateX(-50%);
+        }
+        .timeline-item.active .timeline-item-icon {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        .timeline-item.active .timeline-item-icon .fa-check {
+             display: block;
+        }
+        .timeline-item-icon .fa-check {
+            display: none;
+        }
+        .timeline-item-content {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-left: 20px;
+        }
+        .timeline-item.active .timeline-item-content {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Profile picture upload styling */
+        .profile-picture-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto 1.5rem;
+            border: 2px solid #ccc;
+        }
+        .profile-picture-container:hover {
+            border-color: var(--primary-color);
+        }
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-picture-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            text-align: center;
+            padding: 5px 0;
+            font-size: 0.875rem;
+            display: none; /* Hidden by default */
+        }
+        .profile-picture-container:hover .profile-picture-overlay {
+            display: block;
+        }
+        .profile-picture-container input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="sticky-header bg-primary shadow-md text-white">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold italic nav-link" data-page="home">IndiCart</a>
+                    <span class="text-xs text-accent font-bold ml-1 italic mt-1">Explore More</span>
+                </div>
+
+                <!-- Search Bar (Desktop) -->
+                <div class="hidden md:flex flex-grow max-w-xl mx-4">
+                    <div class="relative w-full">
+                        <input type="text" id="desktop-search-input" placeholder="Search for products, brands and more" class="w-full py-2 px-4 rounded-l-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent-color">
+                        <button id="desktop-search-btn" class="absolute right-0 top-0 h-full bg-white text-primary px-4 rounded-r-md hover:text-primary-dark transition">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- User Actions -->
+                <div class="flex items-center space-x-4 md:space-x-6">
+                    <div id="auth-container" class="flex items-center space-x-2">
+                        <button id="login-btn" class="bg-white text-primary font-semibold px-4 py-2 rounded-md text-sm hover:bg-gray-100 transition">Login</button>
+                        <div id="user-profile-menu-container" class="relative hidden">
+                            <button id="user-profile-toggle" class="flex items-center space-x-2 text-white hover:text-gray-200 transition">
+                                <img id="header-profile-pic" class="w-8 h-8 rounded-full object-cover" src="https://picsum.photos/40/40" alt="Profile">
+                                <span id="header-user-name" class="font-semibold text-sm hidden md:inline"></span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div id="profile-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 hidden">
+                                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 nav-link" data-page="profile"><i class="fas fa-user mr-2"></i> My Profile</a>
+                                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 nav-link" data-page="my-orders"><i class="fas fa-box-open mr-2"></i> My Orders</a>
+                                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 nav-link" data-page="delivery-address"><i class="fas fa-map-marker-alt mr-2"></i> Manage Address</a>
+                                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"><i class="fas fa-headset mr-2"></i> Contact Us</a>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <button id="logout-btn" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"><i class="fas fa-sign-out-alt mr-2"></i> Logout</button>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="flex items-center space-x-1 nav-link" data-page="favorites">
+                        <i class="fas fa-heart text-xl"></i>
+                        <span class="hidden md:inline">Wishlist</span>
+                        <span id="wishlist-count" class="bg-blue-500 text-xs rounded-full h-5 w-5 flex items-center justify-center -ml-2 -mt-2">0</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-1 nav-link" data-page="cart">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="hidden md:inline">Cart</span>
+                        <span id="cart-count" class="bg-red-500 text-xs rounded-full h-5 w-5 flex items-center justify-center -ml-2 -mt-2">0</span>
+                    </a>
+                </div>
+            </div>
+            <!-- Mobile Search Bar -->
+            <div class="md:hidden mt-3">
+                <div class="relative w-full">
+                    <input type="text" id="mobile-search-input" placeholder="Search..." class="w-full py-2 px-4 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent-color">
+                    <button id="mobile-search-btn" class="absolute right-0 top-0 h-full bg-white text-primary px-4 rounded-r-md hover:text-primary-dark transition">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 mb-16"> <!-- Added mb-16 for bottom nav space -->
+        <!-- Homepage -->
+        <div id="home-page" class="page active">
+            <!-- Hero Section -->
+            <section class="mb-8">
+                <div class="relative bg-white rounded-lg overflow-hidden shadow-lg">
+                    <div id="hero-slider" class="flex transition-transform duration-500 ease-in-out">
+                         <!-- Banners will be injected here -->
+                         <img src="https://picsum.photos/1200/400?random=1" class="w-full flex-shrink-0 object-cover" alt="Banner 1">
+                         <img src="https://picsum.photos/1200/400?random=2" class="w-full flex-shrink-0 object-cover" alt="Banner 2">
+                         <img src="https://picsum.photos/1200/400?random=3" class="w-full flex-shrink-0 object-cover" alt="Banner 3">
+                    </div>
+                    <button id="prev-slide" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/70 rounded-full p-2 text-gray-800 hover:bg-white transition"><i class="fas fa-chevron-left"></i></button>
+                    <button id="next-slide" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/70 rounded-full p-2 text-gray-800 hover:bg-white transition"><i class="fas fa-chevron-right"></i></button>
+                    <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2" id="slider-dots">
+                        <!-- Dots will be injected here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Category Grid -->
+            <section class="mb-8 bg-white p-4 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4">Shop by Category</h2>
+                <div id="category-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 text-center">
+                    <!-- Categories will be injected here -->
+                </div>
+            </section>
+
+            <!-- Product Carousels -->
+            <div id="product-carousels">
+                <!-- Product carousels will be injected here -->
+            </div>
+
+            <!-- Limited Time Offer -->
+            <section class="mb-8 bg-gradient-to-r from-red-500 to-orange-500 text-white p-6 rounded-lg shadow-lg flex flex-col md:flex-row items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold">Deal of the Day!</h2>
+                    <p>Hurry, limited time offer!</p>
+                </div>
+                <div id="countdown-timer" class="text-3xl font-bold mt-4 md:mt-0"></div>
+            </section>
+        </div>
+
+        <!-- Search Results Page -->
+        <div id="search-results-page" class="page">
+            <h2 class="text-2xl font-bold mb-6">Search Results for "<span id="search-query-display"></span>"</h2>
+            <div class="flex items-center justify-between mb-4">
+                <span id="total-results" class="text-gray-600">0 results found</span>
+                <button id="filter-sort-btn" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition flex items-center"><i class="fas fa-sort mr-2"></i> Sort & Filter</button>
+            </div>
+            <section id="search-product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Search product cards will be injected here -->
+            </section>
+        </div>
+
+        <!-- Product Listing Page (for categories or general browse) -->
+        <div id="listing-page" class="page">
+            <h2 class="text-2xl font-bold mb-6" id="listing-title">All Products</h2>
+            <div class="flex items-center justify-between mb-4">
+                <span id="listing-total-results" class="text-gray-600">0 results found</span>
+                <button id="listing-filter-sort-btn" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition flex items-center"><i class="fas fa-sort mr-2"></i> Sort & Filter</button>
+            </div>
+            <section id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Product cards will be injected here -->
+            </section>
+        </div>
+
+        <!-- Product Details Page -->
+        <div id="details-page" class="page bg-white p-6 rounded-lg shadow-lg">
+            <button class="mb-4 text-gray-600 hover:text-primary transition" onclick="history.back()"><i class="fas fa-arrow-left mr-2"></i> Back to Products</button>
+            <div id="product-detail-content" class="flex flex-col lg:flex-row gap-8">
+                <!-- Content will be injected here -->
+            </div>
+        </div>
+
+        <!-- Cart Page -->
+        <div id="cart-page" class="page">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 border-b pb-2">My Cart</h2>
+                <div id="cart-items-container">
+                    <!-- Cart items will be injected here -->
+                </div>
+                <div id="cart-summary" class="mt-6 text-right">
+                    <!-- Summary will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Favorites (Wishlist) Page -->
+        <div id="favorites-page" class="page">
+            <h2 class="text-2xl font-bold mb-6">My Wishlist</h2>
+            <div id="favorites-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Favorited products will be injected here -->
+            </div>
+            <p id="favorites-empty-message" class="text-center text-gray-500 hidden">Your wishlist is empty.</p>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile-page" class="page">
+            <div id="profile-view" class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-6">My Profile</h2>
+
+                <div class="flex flex-col items-center mb-6">
+                    <div class="profile-picture-container">
+                        <img id="profile-pic-display" src="https://picsum.photos/120/120" alt="Profile Picture">
+                        <input type="file" id="profile-pic-upload" accept="image/*">
+                        <div class="profile-picture-overlay">Change Picture</div>
+                    </div>
+                    <span id="profile-user-email" class="text-gray-600">user@example.com</span>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="profile-name-input" class="block text-gray-700 text-sm font-bold mb-2">Your Name</label>
+                        <input type="text" id="profile-name-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" placeholder="Enter your name">
+                    </div>
+                    <div id="seller-name-input-group" class="hidden">
+                        <label for="profile-seller-name-input" class="block text-gray-700 text-sm font-bold mb-2">Seller Name (Public)</label>
+                        <input type="text" id="profile-seller-name-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" placeholder="Your public seller name">
+                    </div>
+                    <button id="update-profile-btn" class="w-full bg-primary text-white font-bold py-2 px-4 rounded hover:bg-primary-dark transition">Update Profile</button>
+                </div>
+
+                <div class="mt-8 border-t pt-6 space-y-3">
+                    <a href="#" class="block text-gray-800 hover:text-primary nav-link" data-page="my-orders"><i class="fas fa-box-open mr-3 w-5"></i> My Orders</a>
+                    <a href="#" class="block text-gray-800 hover:text-primary nav-link" data-page="delivery-address"><i class="fas fa-map-marker-alt mr-3 w-5"></i> Manage Address</a>
+                    <a href="#" class="block text-gray-800 hover:text-primary"><i class="fas fa-headset mr-3 w-5"></i> Contact Us</a>
+                    <button id="profile-logout-btn" class="w-full text-left block text-gray-800 hover:text-primary"><i class="fas fa-sign-out-alt mr-3 w-5"></i> Logout</button>
+
+                    <div id="seller-dashboard-section" class="mt-8 pt-6 border-t border-gray-200 hidden">
+                        <h3 class="text-xl font-bold mb-4">Seller Dashboard</h3>
+                        <p class="text-gray-600 mb-4">Manage your products here.</p>
+
+                        <!-- Add New Product Form for Sellers -->
+                        <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                            <h4 class="font-bold text-lg mb-3">Add New Product</h4>
+                            <form id="seller-add-product-form" class="space-y-3">
+                                <div>
+                                    <label for="seller-product-name" class="block text-gray-700 text-sm font-bold mb-1">Product Name</label>
+                                    <input type="text" id="seller-product-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                                </div>
+                                <div>
+                                    <label for="seller-product-description" class="block text-gray-700 text-sm font-bold mb-1">Description</label>
+                                    <textarea id="seller-product-description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required></textarea>
+                                </div>
+                                <div>
+                                    <label for="seller-product-price" class="block text-gray-700 text-sm font-bold mb-1">Price (₹)</label>
+                                    <input type="number" id="seller-product-price" step="0.01" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                                </div>
+                                <div>
+                                    <label for="seller-product-category" class="block text-gray-700 text-sm font-bold mb-1">Category</label>
+                                    <select id="seller-product-category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                                        <!-- Categories will be injected here -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="seller-product-type" class="block text-gray-700 text-sm font-bold mb-1">Product Type</label>
+                                    <select id="seller-product-type" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                                        <option value="physical">Physical</option>
+                                        <option value="digital">Digital</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="seller-product-image-url" class="block text-gray-700 text-sm font-bold mb-1">Image URL</label>
+                                    <input type="url" id="seller-product-image-url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                                </div>
+                                <button type="submit" class="w-full bg-primary text-white font-bold py-2 px-4 rounded hover:bg-primary-dark transition">Add Product</button>
+                            </form>
+                        </div>
+
+                        <!-- Seller's Product List -->
+                        <h4 class="font-bold text-lg mb-3">Your Listed Products</h4>
+                        <div id="seller-products-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Seller's products will be injected here -->
+                            <p id="seller-products-empty-message" class="text-center text-gray-500 col-span-full hidden">You haven't listed any products yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="login-signup-view" class="bg-white p-6 rounded-lg shadow-lg hidden">
+                <!-- This will be shown if user is not logged in -->
+            </div>
+        </div>
+
+        <!-- My Orders Screen -->
+        <div id="my-orders-page" class="page">
+            <h2 class="text-2xl font-bold mb-6">My Orders</h2>
+            <div id="orders-container" class="space-y-4">
+                <!-- Orders will be injected here -->
+            </div>
+            <p id="orders-empty-message" class="text-center text-gray-500 hidden">You have no past orders.</p>
+        </div>
+
+        <!-- Track Order Screen -->
+        <div id="track-order-page" class="page bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-6">Track Order: <span id="track-order-id">#ORD12345</span></h2>
+            <div class="timeline" id="order-timeline">
+                <!-- Timeline items will be injected here -->
+            </div>
+             <p id="track-order-not-found" class="text-center text-gray-500 hidden mt-8">Order not found.</p>
+        </div>
+
+        <!-- Delivery Address Screen -->
+        <div id="delivery-address-page" class="page bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-6">Delivery Address & Payment</h2>
+            <div id="delivery-address-form-container">
+                <form id="address-form" class="space-y-4">
+                    <div>
+                        <label for="full-name" class="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
+                        <input type="text" id="full-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" required>
+                    </div>
+                    <div>
+                        <label for="mobile-number" class="block text-gray-700 text-sm font-bold mb-2">Mobile Number</label>
+                        <input type="tel" id="mobile-number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" required>
+                    </div>
+                    <div>
+                        <label for="pincode" class="block text-gray-700 text-sm font-bold mb-2">Pincode</label>
+                        <input type="text" id="pincode" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" maxlength="6" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="city" class="block text-gray-700 text-sm font-bold mb-2">City</label>
+                            <input type="text" id="city" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label for="state" class="block text-gray-700 text-sm font-bold mb-2">State</label>
+                            <input type="text" id="state" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-gray-100" readonly>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="address-line1" class="block text-gray-700 text-sm font-bold mb-2">Address Line 1 (House No., Building Name)</label>
+                        <input type="text" id="address-line1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" required>
+                    </div>
+                    <div>
+                        <label for="address-line2" class="block text-gray-700 text-sm font-bold mb-2">Address Line 2 (Area, Colony, Street, Sector)</label>
+                        <input type="text" id="address-line2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light">
+                    </div>
+
+                    <div class="mt-6 border-t pt-4">
+                        <h3 class="text-xl font-bold mb-4">Payment Method</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="payment-method" value="COD" class="mr-2 text-primary" checked> Cash on Delivery
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="payment-method" value="Online" class="mr-2 text-primary"> Online Payment (PayPal)
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="place-order-btn" class="w-full bg-primary text-white font-bold py-3 rounded-md hover:bg-primary-dark transition mt-6">Place Order</button>
+                </form>
+            </div>
+            <div id="digital-checkout-message" class="hidden bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md" role="alert">
+                <p class="font-bold">No Delivery Address Needed</p>
+                <p>Your cart contains only digital products. You will receive access instructions via email after purchase.</p>
+                <div class="mt-6 border-t pt-4">
+                    <h3 class="text-xl font-bold mb-4">Payment Method</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="radio" name="payment-method-digital" value="Online" class="mr-2 text-primary" checked> Online Payment (PayPal)
+                        </label>
+                    </div>
+                </div>
+                 <button type="button" id="place-digital-order-btn" class="w-full bg-primary text-white font-bold py-3 rounded-md hover:bg-primary-dark transition mt-6">Place Order</button>
+            </div>
+        </div>
+
+        <!-- Order Confirmation Screen -->
+        <div id="order-confirmation-page" class="page bg-white p-6 rounded-lg shadow-lg text-center">
+            <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
+            <h2 class="text-3xl font-bold text-green-700 mb-2">Order Placed Successfully!</h2>
+            <p class="text-gray-600 mb-6">Your order <span id="confirmed-order-id" class="font-semibold"></span> has been placed.</p>
+            <p class="text-gray-600 mb-8">You will receive an email confirmation shortly.</p>
+            <button class="bg-primary text-white font-bold py-3 px-8 rounded-md hover:bg-primary-dark transition nav-link" data-page="home">Continue Shopping</button>
+            <button class="ml-4 bg-gray-200 text-gray-800 font-bold py-3 px-8 rounded-md hover:bg-gray-300 transition nav-link" data-page="my-orders">View Orders</button>
+        </div>
+    </main>
+
+    <!-- Fixed Bottom Navigation for Mobile -->
+    <nav class="sticky-bottom-nav bg-white shadow-lg border-t border-gray-200 py-2 md:hidden">
+        <ul class="flex justify-around items-center text-gray-700">
+            <li>
+                <a href="#" class="flex flex-col items-center p-2 nav-link text-primary" data-page="home">
+                    <i class="fas fa-home text-xl"></i>
+                    <span class="text-xs">Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex flex-col items-center p-2 nav-link" data-page="favorites">
+                    <i class="fas fa-heart text-xl"></i>
+                    <span class="text-xs">Wishlist</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex flex-col items-center p-2 nav-link" data-page="cart">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span class="text-xs">Cart</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex flex-col items-center p-2 nav-link" data-page="profile">
+                    <i class="fas fa-user-circle text-xl"></i>
+                    <span class="text-xs">Profile</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Footer (Hidden on mobile when bottom nav is active) -->
+    <footer class="bg-gray-800 text-white mt-8 hidden md:block">
+        <div class="container mx-auto px-6 py-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="font-bold mb-2">ABOUT</h3>
+                    <ul>
+                        <li class="py-1"><a href="#" class="hover:underline">Contact Us</a></li>
+                        <li class="py-1"><a href="#" class="hover:underline">About Us</a></li>
+                        <li class="py-1"><a href="#" class="hover:underline">Careers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">HELP</h3>
+                    <ul>
+                        <li class="py-1"><a href="#" class="hover:underline">Payments</a></li>
+                        <li class="py-1"><a href="#" class="hover:underline">Shipping</a></li>
+                        <li class="py-1"><a href="#" class="hover:underline">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">SOCIAL</h3>
+                    <ul>
+                        <li class="py-1"><a href="#" class="hover:underline">Facebook</a></li>
+                        <li class="py-1"><a href="#" class="hover:underline">Twitter</a></li>
+                        <li class="py-1"><a href="#" class="hover:underline">YouTube</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">POLICY</h3>
+                    <ul>
+                        <li class="py-1"><a href="#" class="hover:underline">Return Policy</a></li>
+                        <li class="py-1"><a href="#" class="hover:underline">Terms of Use</a></li>
+                        <li class="py-1"><a href="#" class="hover:underline">Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm">
+                &copy; 2025 IndiaCart. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login/Signup Modal -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="document.getElementById('login-modal').classList.remove('flex')">&times;</button>
+            <div class="p-4">
+                <h2 id="modal-title" class="text-2xl font-bold text-center mb-2">Login</h2>
+                <p id="modal-subtitle" class="text-center text-gray-600 mb-6">Get access to your Orders, Wishlist and Recommendations</p>
+                <div id="auth-error" class="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-sm hidden"></div>
+                <form id="auth-form">
+                    <div class="mb-4">
+                        <input type="email" id="email-input" placeholder="Enter Email" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light" required>
+                    </div>
+                    <div class="mb-4">
+                        <input type="password" id="password-input" placeholder="Enter Password" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light" required>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-4">By continuing, you agree to IndiCart's <a href="#" class="text-primary font-semibold">Terms of Use</a> and <a href="#" class="text-primary font-semibold">Privacy Policy</a>.</p>
+                    <button type="submit" id="main-auth-btn" class="w-full bg-orange-500 text-white font-semibold p-3 rounded-md hover:bg-orange-600 transition">Login</button>
+                </form>
+                <p class="text-center my-4 text-gray-500">OR</p>
+                <button id="secondary-auth-btn" class="w-full bg-primary text-white font-semibold p-3 rounded-md hover:bg-primary-dark transition">Request OTP</button>
+                <p class="text-center mt-6">
+                    <a href="#" id="switch-auth-mode" class="text-primary font-semibold">New to IndiCart? Create an account</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alert-modal" class="modal-overlay">
+        <div class="modal-content text-center">
+            <button class="modal-close-btn" onclick="document.getElementById('alert-modal').classList.remove('flex')">&times;</button>
+            <h3 id="alert-modal-title" class="text-xl font-bold mb-4">Alert</h3>
+            <p id="alert-modal-message" class="text-gray-700 mb-6"></p>
+            <button class="bg-primary text-white font-bold py-2 px-6 rounded hover:bg-primary-dark transition" onclick="document.getElementById('alert-modal').classList.remove('flex')">OK</button>
+        </div>
+    </div>
+
+    <!-- Filter/Sort Modal -->
+    <div id="filter-sort-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="document.getElementById('filter-sort-modal').classList.remove('flex')">&times;</button>
+            <h3 class="text-2xl font-bold mb-4">Filter & Sort</h3>
+
+            <div class="mb-6">
+                <h4 class="font-bold text-lg mb-2">Sort By Price</h4>
+                <div class="flex flex-col space-y-2">
+                    <label class="flex items-center">
+                        <input type="radio" name="sort-price" value="lowToHigh" class="mr-2 text-primary" checked> Price: Low to High
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="sort-price" value="highToLow" class="mr-2 text-primary"> Price: High to Low
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="font-bold text-lg mb-2">Filter By Category</h4>
+                <div id="filter-categories-container" class="flex flex-col space-y-2 max-h-48 overflow-y-auto border p-2 rounded-md">
+                    <!-- Categories will be injected here -->
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <h4 class="font-bold text-lg mb-2">Filter By Product Type</h4>
+                <div class="flex flex-col space-y-2">
+                    <label class="flex items-center">
+                        <input type="radio" name="filter-product-type" value="all" class="mr-2 text-primary" checked> All Types
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="filter-product-type" value="physical" class="mr-2 text-primary"> Physical Products
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="filter-product-type" value="digital" class="mr-2 text-primary"> Digital Products
+                    </label>
+                </div>
+            </div>
+
+            <button id="apply-filter-sort-btn" class="w-full bg-primary text-white font-bold py-3 rounded-md hover:bg-primary-dark transition">Apply Filters & Sort</button>
+        </div>
+    </div>
+
+    <!-- Seller Product Edit Modal -->
+    <div id="seller-product-edit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="document.getElementById('seller-product-edit-modal').classList.remove('flex')">&times;</button>
+            <h3 id="seller-edit-product-form-title" class="text-xl font-bold mb-4">Edit Product</h3>
+            <form id="seller-edit-product-form" class="space-y-4">
+                <div>
+                    <label for="edit-seller-product-name" class="block text-gray-700 text-sm font-bold mb-1">Product Name</label>
+                    <input type="text" id="edit-seller-product-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                </div>
+                <div>
+                    <label for="edit-seller-product-description" class="block text-gray-700 text-sm font-bold mb-1">Description</label>
+                    <textarea id="edit-seller-product-description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required></textarea>
+                </div>
+                <div>
+                    <label for="edit-seller-product-price" class="block text-gray-700 text-sm font-bold mb-1">Price (₹)</label>
+                    <input type="number" id="edit-seller-product-price" step="0.01" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                </div>
+                <div>
+                    <label for="edit-seller-product-category" class="block text-gray-700 text-sm font-bold mb-1">Category</label>
+                    <select id="edit-seller-product-category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                        <!-- Categories will be injected here -->
+                    </select>
+                </div>
+                <div>
+                    <label for="edit-seller-product-type" class="block text-gray-700 text-sm font-bold mb-1">Product Type</label>
+                    <select id="edit-seller-product-type" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                        <option value="physical">Physical</option>
+                        <option value="digital">Digital</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="edit-seller-product-image-url" class="block text-gray-700 text-sm font-bold mb-1">Image URL</label>
+                    <input type="url" id="edit-seller-product-image-url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                </div>
+                <button type="submit" class="w-full bg-primary text-white font-bold py-2 px-4 rounded hover:bg-primary-dark transition">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_DUMMY_PAYPAL_CLIENT_ID_HERE&currency=USD"></script>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import {
+            getAuth,
+            onAuthStateChanged,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import {
+            getDatabase,
+            ref,
+            onValue,
+            set,
+            push,
+            remove,
+            update,
+            serverTimestamp,
+            get
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import {
+            getStorage,
+            ref as storageRef,
+            uploadBytes,
+            getDownloadURL
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+        // Your web app's Firebase configuration
+        // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAkefZxw5CyZBSvXDI0IK5d8uqQphJA3Ho",
+  authDomain: "indiacart-e-commerce-app.firebaseapp.com",
+  databaseURL: "https://indiacart-e-commerce-app-default-rtdb.firebaseio.com",
+  projectId: "indiacart-e-commerce-app",
+  storageBucket: "indiacart-e-commerce-app.firebasestorage.app",
+  messagingSenderId: "557161274487",
+  appId: "1:557161274487:web:bafaa15e6fb8ba5484ba72"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+    
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+        const storage = getStorage(app);
+
+        let currentUser = null;
+        let allProductsData = []; // Store all products fetched from Firebase
+        let allSellersData = {}; // Store seller profiles {uid: {sellerName, ...}}
+        let allCategoriesData = []; // Store all categories from Firebase
+
+        let currentFilterCategory = null;
+        let currentFilterProductType = 'all'; // 'all', 'physical', 'digital'
+        let currentSortOrder = 'lowToHigh';
+        let currentSearchQuery = '';
+
+        // Global state for cart and wishlist (will be synchronized with Firebase)
+        let userCart = [];
+        let userWishlist = [];
+        let userAddress = null; // Stored user address
+        let userOrders = []; // Stored user orders
+        let isCurrentUserSeller = false;
+
+        // --- SAMPLE DATA (for initial display if Firebase is empty) ---
+        const SAMPLE_PRODUCTS_CAROUSEL_DATA = {
+            "Top Deals": [
+                { id: 'sample1', name: "Wireless Earbuds", price: "1299", rating: 4.5, image: "https://picsum.photos/200/200?random=1", type: "physical", category: "Electronics" },
+                { id: 'sample2', name: "Smart Watch", price: "2499", rating: 4.7, image: "https://picsum.photos/200/200?random=2", type: "physical", category: "Electronics" },
+                { id: 'sample3', name: "Bluetooth Speaker", price: "999", rating: 4.3, image: "https://picsum.photos/200/200?random=3", type: "physical", category: "Electronics" },
+                { id: 'sample4', name: "Ebook: Learn Coding", price: "499", rating: 4.8, image: "https://picsum.photos/200/200?random=4", type: "digital", category: "Books" },
+                { id: 'sample5', name: "Graphic Design Template", price: "199", rating: 4.6, image: "https://picsum.photos/200/200?random=5", type: "digital", category: "Digital" },
+            ],
+            "Best of Electronics": [
+                { id: 'sample6', name: "4K UHD Television", price: "34999", rating: 4.8, image: "https://picsum.photos/200/200?random=6", type: "physical", category: "Electronics" },
+                { id: 'sample7', name: "Laptop Pro", price: "79999", rating: 4.9, image: "https://picsum.photos/200/200?random=7", type: "physical", category: "Electronics" },
+                { id: 'sample8', name: "DSLR Camera", price: "45999", rating: 4.7, image: "https://picsum.photos/200/200?random=8", type: "physical", category: "Electronics" },
+            ],
+            "Trending Mobiles": [
+                { id: 'sample9', name: "Smartphone X", price: "19999", rating: 4.5, image: "https://picsum.photos/200/200?random=9", type: "physical", category: "Mobiles" },
+                { id: 'sample10', name: "Smartphone Y", price: "25999", rating: 4.6, image: "https://picsum.photos/200/200?random=10", type: "physical", category: "Mobiles" },
+            ]
+        };
+
+
+        // --- UI ELEMENTS ---
+        const loginModal = document.getElementById('login-modal');
+        const loginBtn = document.getElementById('login-btn');
+        const userProfileMenuContainer = document.getElementById('user-profile-menu-container');
+        const userProfileToggle = document.getElementById('user-profile-toggle');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const logoutBtn = document.getElementById('logout-btn');
+        const profileLogoutBtn = document.getElementById('profile-logout-btn');
+        const authForm = document.getElementById('auth-form');
+        const switchAuthModeLink = document.getElementById('switch-auth-mode');
+        const mainAuthBtn = document.getElementById('main-auth-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const modalSubtitle = document.getElementById('modal-subtitle');
+        const authErrorDiv = document.getElementById('auth-error');
+        const emailInput = document.getElementById('email-input');
+        const passwordInput = document.getElementById('password-input');
+
+        const cartCountSpan = document.getElementById('cart-count');
+        const wishlistCountSpan = document.getElementById('wishlist-count');
+        const heroSlider = document.getElementById('hero-slider');
+        const sliderDotsContainer = document.getElementById('slider-dots');
+        const categoryGrid = document.getElementById('category-grid');
+        const productCarouselsDiv = document.getElementById('product-carousels');
+        const desktopSearchInput = document.getElementById('desktop-search-input');
+        const mobileSearchInput = document.getElementById('mobile-search-input');
+        const desktopSearchBtn = document.getElementById('desktop-search-btn');
+        const mobileSearchBtn = document.getElementById('mobile-search-btn');
+
+        const searchResultsPage = document.getElementById('search-results-page');
+        const searchProductGrid = document.getElementById('search-product-grid');
+        const searchQueryDisplay = document.getElementById('search-query-display');
+        const totalResultsSpan = document.getElementById('total-results');
+
+        const listingPage = document.getElementById('listing-page');
+        const productGrid = document.getElementById('product-grid');
+        const listingTitle = document.getElementById('listing-title');
+        const listingTotalResultsSpan = document.getElementById('listing-total-results');
+
+        const detailsPage = document.getElementById('details-page');
+        const productDetailContent = document.getElementById('product-detail-content');
+
+        const cartPage = document.getElementById('cart-page');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartSummary = document.getElementById('cart-summary');
+
+        const favoritesPage = document.getElementById('favorites-page');
+        const favoritesContainer = document.getElementById('favorites-container');
+        const favoritesEmptyMessage = document.getElementById('favorites-empty-message');
+
+        const profilePage = document.getElementById('profile-page');
+        const profilePicDisplay = document.getElementById('profile-pic-display');
+        const profilePicUpload = document.getElementById('profile-pic-upload');
+        const profileNameInput = document.getElementById('profile-name-input');
+        const profileSellerNameInput = document.getElementById('profile-seller-name-input');
+        const sellerNameInputGroup = document.getElementById('seller-name-input-group');
+        const profileUserEmailSpan = document.getElementById('profile-user-email');
+        const updateProfileBtn = document.getElementById('update-profile-btn');
+        const headerProfilePic = document.getElementById('header-profile-pic');
+        const headerUserName = document.getElementById('header-user-name');
+        const sellerDashboardSection = document.getElementById('seller-dashboard-section');
+        const sellerAddProductForm = document.getElementById('seller-add-product-form');
+        const sellerProductNameInput = document.getElementById('seller-product-name');
+        const sellerProductDescriptionInput = document.getElementById('seller-product-description');
+        const sellerProductPriceInput = document.getElementById('seller-product-price');
+        const sellerProductCategorySelect = document.getElementById('seller-product-category');
+        const sellerProductTypeSelect = document.getElementById('seller-product-type');
+        const sellerProductImageUrlInput = document.getElementById('seller-product-image-url');
+        const sellerProductsList = document.getElementById('seller-products-list');
+        const sellerProductsEmptyMessage = document.getElementById('seller-products-empty-message');
+
+        const myOrdersPage = document.getElementById('my-orders-page');
+        const ordersContainer = document.getElementById('orders-container');
+        const ordersEmptyMessage = document.getElementById('orders-empty-message');
+
+        const trackOrderPage = document.getElementById('track-order-page');
+        const trackOrderIdSpan = document.getElementById('track-order-id');
+        const orderTimeline = document.getElementById('order-timeline');
+        const trackOrderNotFound = document.getElementById('track-order-not-found');
+
+        const deliveryAddressPage = document.getElementById('delivery-address-page');
+        const addressForm = document.getElementById('address-form');
+        const pincodeInput = document.getElementById('pincode');
+        const cityInput = document.getElementById('city');
+        const stateInput = document.getElementById('state');
+        const fullNameInput = document.getElementById('full-name');
+        const mobileNumberInput = document.getElementById('mobile-number');
+        const addressLine1Input = document.getElementById('address-line1');
+        const addressLine2Input = document.getElementById('address-line2');
+        const placeOrderBtn = document.getElementById('place-order-btn');
+        const digitalCheckoutMessage = document.getElementById('digital-checkout-message');
+        const deliveryAddressFormContainer = document.getElementById('delivery-address-form-container');
+        const placeDigitalOrderBtn = document.getElementById('place-digital-order-btn');
+
+
+        const orderConfirmationPage = document.getElementById('order-confirmation-page');
+        const confirmedOrderIdSpan = document.getElementById('confirmed-order-id');
+
+        const alertModal = document.getElementById('alert-modal');
+        const alertModalTitle = document.getElementById('alert-modal-title');
+        const alertModalMessage = document.getElementById('alert-modal-message');
+
+        const filterSortModal = document.getElementById('filter-sort-modal');
+        const filterCategoriesContainer = document.getElementById('filter-categories-container');
+        const filterProductTypeRadios = document.querySelectorAll('input[name="filter-product-type"]');
+        const applyFilterSortBtn = document.getElementById('apply-filter-sort-btn');
+
+        const sellerProductEditModal = document.getElementById('seller-product-edit-modal');
+        const sellerEditProductFormTitle = document.getElementById('seller-edit-product-form-title');
+        const sellerEditProductForm = document.getElementById('seller-edit-product-form');
+        const editSellerProductNameInput = document.getElementById('edit-seller-product-name');
+        const editSellerProductDescriptionInput = document.getElementById('edit-seller-product-description');
+        const editSellerProductPriceInput = document.getElementById('edit-seller-product-price');
+        const editSellerProductCategorySelect = document.getElementById('edit-seller-product-category');
+        const editSellerProductTypeSelect = document.getElementById('edit-seller-product-type');
+        const editSellerProductImageUrlInput = document.getElementById('edit-seller-product-image-url');
+        let editingSellerProductId = null;
+
+
+        // --- GLOBAL FUNCTIONS & HELPERS ---
+        function showPage(pageId, productId = null, orderId = null) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`${pageId}-page`).classList.add('active');
+            window.scrollTo(0, 0);
+
+            if (pageId === 'details' && productId) {
+                renderProductDetails(productId);
+            } else if (pageId === 'cart') {
+                renderCart();
+            } else if (pageId === 'favorites') {
+                renderFavorites();
+            } else if (pageId === 'profile') {
+                renderProfilePage();
+            } else if (pageId === 'my-orders') {
+                renderMyOrders();
+            } else if (pageId === 'track-order' && orderId) {
+                renderTrackOrder(orderId);
+            } else if (pageId === 'search-results') {
+                renderSearchResults(currentSearchQuery, true); // Re-render with current query
+            } else if (pageId === 'listing') {
+                renderProductListing(currentFilterCategory, currentSortOrder, currentFilterProductType, true); // Re-render with current filters
+            } else if (pageId === 'delivery-address') {
+                checkCartForDigitalProducts();
+            }
+        }
+
+        function showAlert(message, title = 'Alert') {
+            alertModalTitle.textContent = title;
+            alertModalMessage.textContent = message;
+            alertModal.classList.add('flex');
+        }
+
+        async function fetchJSON(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                showAlert(`Failed to fetch data from ${url}. Please try again later.`);
+                return null;
+            }
+        }
+
+        // --- PRODUCT RENDERING ---
+        function renderProductCard(product, isFavorite = false) {
+            const priceNum = parseFloat(product.price); // Assumes price is already clean number or can be parsed
+            const sellerInfo = product.sellerId ? (allSellersData[product.sellerId]?.sellerName || 'Seller') : 'Platform';
+            return `
+                <div class="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between hover:shadow-xl transition-shadow duration-300 product-card cursor-pointer" data-product-id="${product.id}">
+                    <img src="${product.image || `https://picsum.photos/200/200?random=${product.id}`}" alt="${product.name}" class="w-full h-40 object-contain mb-4">
+                    <div>
+                        <h3 class="font-semibold text-sm truncate">${product.name}</h3>
+                        <div class="flex items-center text-xs text-gray-500 mb-1">
+                            <span>By: ${sellerInfo}</span>
+                            <span class="ml-2 px-2 py-0.5 bg-gray-200 rounded-full">${product.type === 'digital' ? 'Digital' : 'Physical'}</span>
+                        </div>
+                        <div class="flex items-center my-2">
+                            <div class="bg-green-600 text-white text-xs px-2 py-1 rounded-md flex items-center">
+                                ${product.rating || 'N/A'} <i class="fas fa-star text-xs ml-1"></i>
+                            </div>
+                            <button class="favorite-toggle ml-auto text-gray-400 hover:text-red-500 transition ${isFavorite ? 'text-red-500' : ''}" data-product-id="${product.id}">
+                                <i class="${isFavorite ? 'fas' : 'far'} fa-heart text-lg"></i>
+                            </button>
+                        </div>
+                        <p class="font-bold text-lg">₹${priceNum.toLocaleString('en-IN')}</p>
+                        <button class="w-full mt-2 bg-accent text-gray-900 font-bold py-2 rounded-md hover:bg-accent-dark transition add-to-cart-btn" data-product-id="${product.id}">Add to Cart</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSellerProductCard(product) {
+            const priceNum = parseFloat(product.price); // Assumes price is already clean number or can be parsed
+            return `
+                <div class="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between transition-shadow duration-300">
+                    <img src="${product.image || `https://picsum.photos/100/100?random=${product.id}`}" alt="${product.name}" class="w-full h-24 object-contain mb-4">
+                    <div>
+                        <h3 class="font-semibold text-sm truncate">${product.name}</h3>
+                        <p class="text-xs text-gray-500">${product.type === 'digital' ? 'Digital' : 'Physical'}</p>
+                        <p class="font-bold text-md">₹${priceNum.toLocaleString('en-IN')}</p>
+                        <div class="flex justify-between mt-2 space-x-2">
+                            <button class="flex-1 bg-blue-500 text-white text-xs font-bold py-1 px-2 rounded hover:bg-blue-600 transition seller-edit-product-btn" data-product-id="${product.id}">Edit</button>
+                            <button class="flex-1 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded hover:bg-red-600 transition seller-delete-product-btn" data-product-id="${product.id}">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        function renderProductCarousel(title, products) {
+            const productsHTML = products.map(p => renderProductCard(p, userWishlist.includes(p.id))).join('');
+            return `
+                <section class="mb-8 bg-white p-4 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-bold mb-4">${title}</h2>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        ${productsHTML}
+                    </div>
+                </section>
+            `;
+        }
+
+        async function renderCategories() {
+            onValue(ref(database, 'categories'), (snapshot) => {
+                const categories = snapshot.val() || {};
+                allCategoriesData = Object.keys(categories).map(key => ({ id: key, ...categories[key] }));
+
+                // If no categories from DB, use sample categories
+                const categoriesToRender = allCategoriesData.length > 0 ? allCategoriesData : [
+                    { name: "Mobiles", icon: "fa-mobile-alt" },
+                    { name: "Fashion", icon: "fa-tshirt" },
+                    { name: "Electronics", icon: "fa-laptop" },
+                    { name: "Home", icon: "fa-home" },
+                    { name: "Appliances", icon: "fa-blender" },
+                    { name: "Books", icon: "fa-book" },
+                    { name: "Grocery", icon: "fa-shopping-basket" },
+                    { name: "Toys", icon: "fa-gamepad" },
+                    { name: "Digital", icon: "fa-globe" } // Added for digital products
+                ];
+
+                categoryGrid.innerHTML = categoriesToRender.map(cat => `
+                    <div class="flex flex-col items-center p-2 rounded-lg hover:bg-gray-100 cursor-pointer nav-link category-link" data-category="${cat.name}">
+                        <i class="fas ${cat.icon} text-3xl text-primary mb-2"></i>
+                        <span class="text-sm font-semibold">${cat.name}</span>
+                    </div>
+                `).join('');
+
+                // Render categories in filter modal
+                filterCategoriesContainer.innerHTML = categoriesToRender.map(cat => `
+                    <label class="flex items-center">
+                        <input type="checkbox" name="filter-category" value="${cat.name}" class="mr-2 text-primary"> ${cat.name}
+                    </label>
+                `).join('');
+
+                // Populate category select for seller product form
+                const sellerProductCategoryOptions = categoriesToRender.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('');
+                sellerProductCategorySelect.innerHTML = sellerProductCategoryOptions;
+                editSellerProductCategorySelect.innerHTML = sellerProductCategoryOptions;
+            });
+        }
+
+        function getFilteredAndSortedProducts(products, category = null, sortOrder = 'lowToHigh', productType = 'all', searchQuery = '') {
+            let filteredProducts = [...products];
+
+            if (searchQuery) {
+                const lowerCaseQuery = searchQuery.toLowerCase();
+                filteredProducts = filteredProducts.filter(p =>
+                    p.name.toLowerCase().includes(lowerCaseQuery) ||
+                    (p.description && p.description.toLowerCase().includes(lowerCaseQuery)) ||
+                    (p.category && p.category.toLowerCase().includes(lowerCaseQuery)) ||
+                    (p.brand && p.brand.toLowerCase().includes(lowerCaseQuery))
+                );
+            }
+
+            if (category) {
+                filteredProducts = filteredProducts.filter(p => p.category === category);
+            }
+
+            if (productType !== 'all') {
+                filteredProducts = filteredProducts.filter(p => p.type === productType);
+            }
+
+            if (sortOrder === 'lowToHigh') {
+                filteredProducts.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+            } else if (sortOrder === 'highToLow') {
+                filteredProducts.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+            }
+            return filteredProducts;
+        }
+
+        function renderProductListing(category = null, sortOrder = 'lowToHigh', productType = 'all', fromNav = false) {
+            currentFilterCategory = category;
+            currentSortOrder = sortOrder;
+            currentFilterProductType = productType;
+
+            const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+            const productsToRender = getFilteredAndSortedProducts(productsToUse, category, sortOrder, productType);
+
+            productGrid.innerHTML = productsToRender.map(p => renderProductCard(p, userWishlist.includes(p.id))).join('');
+            listingTitle.textContent = category ? category : "All Products";
+            listingTotalResultsSpan.textContent = `${productsToRender.length} results found`;
+            if (fromNav) showPage('listing');
+        }
+
+        function renderSearchResults(query, fromNav = false) {
+            currentSearchQuery = query;
+            const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+            const productsToRender = getFilteredAndSortedProducts(productsToUse, null, currentSortOrder, currentFilterProductType, query);
+
+            searchProductGrid.innerHTML = productsToRender.map(p => renderProductCard(p, userWishlist.includes(p.id))).join('');
+            searchQueryDisplay.textContent = query;
+            totalResultsSpan.textContent = `${productsToRender.length} results found`;
+            if (fromNav) showPage('search-results');
+        }
+
+        function renderProductDetails(productId) {
+            const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+            const product = productsToUse.find(p => p.id == productId);
+            if (!product) {
+                showAlert('Product not found.', 'Error');
+                return;
+            }
+            const priceNum = parseFloat(product.price); // Assumes price is already clean number or can be parsed
+            const sellerInfo = product.sellerId ? (allSellersData[product.sellerId]?.sellerName || 'Seller') : 'Platform';
+
+
+            productDetailContent.innerHTML = `
+                <div class="w-full lg:w-2/5">
+                    <img src="${product.image || `https://picsum.photos/400/400?random=${product.id}`}" alt="${product.name}" class="w-full rounded-lg shadow-md object-contain aspect-square">
+                </div>
+                <div class="w-full lg:w-3/5">
+                    <h2 class="text-3xl font-bold">${product.name}</h2>
+                    <p class="text-sm text-gray-600 mb-2">Sold by: <span class="font-semibold">${sellerInfo}</span></p>
+                    <div class="flex items-center mb-3">
+                        <div class="bg-green-600 text-white text-sm px-3 py-1 rounded-md flex items-center">
+                            ${product.rating || 'N/A'} <i class="fas fa-star text-xs ml-1"></i>
+                        </div>
+                        <span class="text-gray-600 ml-4">${product.numReviews || 'No'} Ratings & ${product.numReviews || 'No'} Reviews</span>
+                        <span class="ml-4 px-3 py-1 bg-gray-200 text-gray-800 rounded-full text-xs font-semibold">${product.type === 'digital' ? 'Digital Product' : 'Physical Product'}</span>
+                    </div>
+                    <p class="text-3xl font-bold text-green-600 my-4">₹${priceNum.toLocaleString('en-IN')}</p>
+                    <p class="text-gray-700 mb-6">${product.description || 'A short but engaging description of the product goes here. Highlighting key features and benefits for the customer.'}</p>
+                    <div class="flex space-x-4">
+                        <button class="flex-1 bg-accent text-gray-900 font-bold py-3 rounded-md hover:bg-accent-dark transition add-to-cart-btn" data-product-id="${product.id}"><i class="fas fa-shopping-cart mr-2"></i>ADD TO CART</button>
+                        <button class="flex-1 bg-primary text-white font-bold py-3 rounded-md hover:bg-primary-dark transition buy-now-btn" data-product-id="${product.id}"><i class="fas fa-bolt mr-2"></i>BUY NOW</button>
+                    </div>
+                    <div class="mt-8 border-t pt-4">
+                        <h3 class="font-bold text-lg mb-2">Specifications</h3>
+                        <ul class="list-disc list-inside text-gray-600">
+                            <li>Product Type: ${product.type === 'digital' ? 'Digital Download' : 'Physical Item'}</li>
+                            ${product.brand ? `<li>Brand: ${product.brand}</li>` : ''}
+                            ${product.model ? `<li>Model: ${product.model}</li>` : ''}
+                            ${product.weight ? `<li>Weight: ${product.weight}</li>` : ''}
+                            ${product.color ? `<li>Color: ${product.color}</li>` : ''}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- CART FUNCTIONALITY ---
+        async function updateCartInFirebase(cartItems) {
+            if (currentUser) {
+                if (cartItems.length === 0) {
+                    await remove(ref(database, `carts/${currentUser.uid}`));
+                } else {
+                    const cartRef = ref(database, `carts/${currentUser.uid}`);
+                    await set(cartRef, null); // Clear existing cart
+                    for (const item of cartItems) {
+                        push(cartRef, item);
+                    }
+                }
+            }
+        }
+
+
+        function renderCart() {
+            if (!currentUser) {
+                cartItemsContainer.innerHTML = '<p class="text-center text-gray-500">Please log in to view your cart.</p>';
+                cartSummary.innerHTML = '';
+                cartCountSpan.textContent = '0';
+                return;
+            }
+
+            if (userCart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-center text-gray-500">Your cart is empty.</p>';
+                cartSummary.innerHTML = '';
+                cartCountSpan.textContent = '0';
+                return;
+            }
+
+            cartItemsContainer.innerHTML = userCart.map(item => {
+                const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+                const product = productsToUse.find(p => p.id === item.productId);
+                if (!product) return ''; // Should not happen with good data
+                const priceNum = parseFloat(product.price);
+                return `
+                    <div class="flex items-center justify-between border-b py-4">
+                        <div class="flex items-center">
+                            <img src="${product.image || `https://picsum.photos/80/80?random=${product.id}`}" class="w-20 h-20 object-contain mr-4 rounded-md">
+                            <div>
+                                <h4 class="font-semibold">${product.name}</h4>
+                                <p class="text-gray-500">₹${priceNum.toLocaleString('en-IN')} <span class="ml-2 px-1 py-0.5 bg-gray-100 text-xs rounded">${product.type === 'digital' ? 'Digital' : 'Physical'}</span></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <button class="cart-quantity-btn text-gray-600 hover:text-primary transition" data-action="decrement" data-product-id="${item.productId}"><i class="fas fa-minus-circle"></i></button>
+                            <span class="w-10 text-center mx-2">${item.quantity}</span>
+                            <button class="cart-quantity-btn text-gray-600 hover:text-primary transition" data-action="increment" data-product-id="${item.productId}"><i class="fas fa-plus-circle"></i></button>
+                            <button class="text-red-500 hover:text-red-700 remove-from-cart-btn ml-4" data-product-id="${item.productId}"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <p class="font-bold">₹${(priceNum * item.quantity).toLocaleString('en-IN')}</p>
+                    </div>
+                `;
+            }).join('');
+
+            const total = userCart.reduce((acc, item) => {
+                const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+                const product = productsToUse.find(p => p.id === item.productId);
+                if (!product) return acc;
+                const priceNum = parseFloat(product.price);
+                return acc + (priceNum * item.quantity);
+            }, 0);
+
+            cartSummary.innerHTML = `
+                <p class="text-lg">Total: <span class="font-bold">₹${total.toLocaleString('en-IN')}</span></p>
+                <button class="mt-4 bg-primary text-white font-bold py-3 px-8 rounded-md hover:bg-primary-dark transition nav-link" data-page="delivery-address">Proceed to Checkout</button>
+            `;
+            cartCountSpan.textContent = userCart.length.toString();
+        }
+
+        // --- WISHLIST FUNCTIONALITY ---
+        async function updateWishlistInFirebase(wishlistItems) {
+            if (currentUser) {
+                if (wishlistItems.length === 0) {
+                    await remove(ref(database, `favorites/${currentUser.uid}`));
+                } else {
+                    const favoritesRef = ref(database, `favorites/${currentUser.uid}`);
+                    await set(favoritesRef, null); // Clear existing favorites
+                    for (const productId of wishlistItems) {
+                        push(favoritesRef, { productId: productId });
+                    }
+                }
+            }
+        }
+
+
+        function renderFavorites() {
+            if (!currentUser) {
+                favoritesContainer.innerHTML = '';
+                favoritesEmptyMessage.textContent = 'Please log in to view your wishlist.';
+                favoritesEmptyMessage.classList.remove('hidden');
+                wishlistCountSpan.textContent = '0';
+                return;
+            }
+
+            if (userWishlist.length === 0) {
+                favoritesContainer.innerHTML = '';
+                favoritesEmptyMessage.textContent = 'Your wishlist is empty.';
+                favoritesEmptyMessage.classList.remove('hidden');
+                wishlistCountSpan.textContent = '0';
+                return;
+            }
+            favoritesEmptyMessage.classList.add('hidden');
+
+            const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+            const favoritedProducts = productsToUse.filter(p => userWishlist.includes(p.id));
+            favoritesContainer.innerHTML = favoritedProducts.map(p => renderProductCard(p, true)).join('');
+            wishlistCountSpan.textContent = userWishlist.length.toString();
+        }
+
+        // --- AUTHENTICATION ---
+        let isLoginMode = true; // true for login, false for signup
+
+        function showAuthError(message) {
+            authErrorDiv.textContent = message;
+            authErrorDiv.classList.remove('hidden');
+        }
+
+        function clearAuthError() {
+             authErrorDiv.classList.add('hidden');
+        }
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            clearAuthError();
+            modalTitle.textContent = isLoginMode ? 'Login' : 'Looks like you\'re new here!';
+            modalSubtitle.textContent = isLoginMode ? 'Get access to your Orders, Wishlist and Recommendations' : 'Sign up with your email to get started';
+            mainAuthBtn.textContent = isLoginMode ? 'Login' : 'Sign Up';
+            switchAuthModeLink.innerHTML = isLoginMode ? 'New to IndiCart? <span class="font-semibold">Create an account</span>' : 'Existing User? <span class="font-semibold">Log in</span>';
+        }
+
+        loginBtn.addEventListener('click', () => {
+            loginModal.classList.add('flex');
+            toggleAuthMode(); // Ensure it starts in Login mode
+            isLoginMode = true; // Explicitly set to login mode
+            modalTitle.textContent = 'Login';
+            modalSubtitle.textContent = 'Get access to your Orders, Wishlist and Recommendations';
+            mainAuthBtn.textContent = 'Login';
+            switchAuthModeLink.innerHTML = 'New to IndiCart? <span class="font-semibold">Create an account</span>';
+            clearAuthError();
+            emailInput.value = '';
+            passwordInput.value = '';
+        });
+        document.querySelector('#login-modal .modal-close-btn').addEventListener('click', () => loginModal.classList.remove('flex'));
+        switchAuthModeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleAuthMode();
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            clearAuthError();
+
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    // Optionally, save user profile to database upon signup
+                    await set(ref(database, `users/${auth.currentUser.uid}/profile`), {
+                        email: auth.currentUser.email,
+                        name: email.split('@')[0], // Default name
+                        profilePic: 'https://picsum.photos/120/120',
+                        isSeller: false, // Default new user is not a seller
+                        registeredDate: serverTimestamp() // Add registration timestamp
+                    });
+                }
+                loginModal.classList.remove('flex');
+            } catch (error) {
+                showAuthError(error.message);
+            }
+        });
+
+        const handleLogout = () => {
+            signOut(auth);
+            showAlert('You have been logged out.');
+            showPage('home');
+        };
+        logoutBtn.addEventListener('click', handleLogout);
+        profileLogoutBtn.addEventListener('click', handleLogout);
+
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user; // Update global currentUser variable
+            if (user) {
+                // User is signed in
+                loginBtn.classList.add('hidden');
+                userProfileMenuContainer.classList.remove('hidden');
+                userProfileMenuContainer.classList.add('flex'); // Show dropdown toggle
+
+                // Fetch user profile
+                onValue(ref(database, `users/${user.uid}/profile`), (snapshot) => {
+                    const profile = snapshot.val();
+                    if (profile) {
+                        profilePicDisplay.src = profile.profilePic || 'https://picsum.photos/120/120';
+                        headerProfilePic.src = profile.profilePic || 'https://picsum.photos/40/40';
+                        profileNameInput.value = profile.name || '';
+                        headerUserName.textContent = profile.name || user.email.split('@')[0];
+                        profileUserEmailSpan.textContent = user.email;
+
+                        isCurrentUserSeller = profile.isSeller || false;
+                        if (isCurrentUserSeller) {
+                            sellerDashboardSection.classList.remove('hidden');
+                            sellerNameInputGroup.classList.remove('hidden');
+                            profileSellerNameInput.value = profile.sellerName || '';
+                            renderSellerProducts(); // Render seller's own products
+                        } else {
+                            sellerDashboardSection.classList.add('hidden');
+                            sellerNameInputGroup.classList.add('hidden');
+                        }
+                    } else {
+                        // Default values if no profile in DB
+                        profilePicDisplay.src = 'https://picsum.photos/120/120';
+                        headerProfilePic.src = 'https://picsum.photos/40/40';
+                        profileNameInput.value = '';
+                        headerUserName.textContent = user.email.split('@')[0];
+                        profileUserEmailSpan.textContent = user.email;
+                        isCurrentUserSeller = false;
+                        sellerDashboardSection.classList.add('hidden');
+                        sellerNameInputGroup.classList.add('hidden');
+                    }
+                });
+
+                // Listen to cart changes
+                onValue(ref(database, `carts/${user.uid}`), (snapshot) => {
+                    const cartData = snapshot.val();
+                    userCart = cartData ? Object.values(cartData) : [];
+                    renderCart(); // Update cart UI when data changes
+                });
+
+                // Listen to wishlist changes
+                onValue(ref(database, `favorites/${user.uid}`), (snapshot) => {
+                    const favData = snapshot.val();
+                    userWishlist = favData ? Object.values(favData).map(item => item.productId) : [];
+                    renderFavorites(); // Update wishlist UI
+                    // Also update heart icons on current product listings
+                    document.querySelectorAll('.product-card').forEach(card => {
+                        const productId = card.dataset.productId;
+                        const heartIcon = card.querySelector('.favorite-toggle i');
+                        if (heartIcon) {
+                            if (userWishlist.includes(productId)) { // Compare string IDs
+                                heartIcon.classList.remove('far');
+                                heartIcon.classList.add('fas');
+                                heartIcon.parentElement.classList.add('text-red-500');
+                            } else {
+                                heartIcon.classList.remove('fas');
+                                heartIcon.classList.add('far');
+                                heartIcon.parentElement.classList.remove('text-red-500');
+                            }
+                        }
+                    });
+                });
+
+                // Listen to address changes
+                onValue(ref(database, `users/${user.uid}/address`), (snapshot) => {
+                    userAddress = snapshot.val();
+                    if (userAddress) {
+                        fullNameInput.value = userAddress.fullName || '';
+                        mobileNumberInput.value = userAddress.mobileNumber || '';
+                        pincodeInput.value = userAddress.pincode || '';
+                        cityInput.value = userAddress.city || '';
+                        stateInput.value = userAddress.state || '';
+                        addressLine1Input.value = userAddress.addressLine1 || '';
+                        addressLine2Input.value = userAddress.addressLine2 || '';
+                    }
+                });
+
+                // Listen to orders changes
+                onValue(ref(database, `orders/${user.uid}`), (snapshot) => {
+                    const ordersObject = snapshot.val();
+                    userOrders = ordersObject ? Object.values(ordersObject) : [];
+                    renderMyOrders();
+                });
+
+            } else {
+                // User is signed out
+                loginBtn.classList.remove('hidden');
+                userProfileMenuContainer.classList.add('hidden');
+                userProfileMenuContainer.classList.remove('flex');
+                headerProfilePic.src = 'https://picsum.photos/40/40'; // Reset to default
+                headerUserName.textContent = ''; // Clear user name
+                profilePicDisplay.src = 'https://picsum.photos/120/120'; // Reset profile page pic
+                profileNameInput.value = '';
+                profileUserEmailSpan.textContent = '';
+                profileSellerNameInput.value = '';
+                isCurrentUserSeller = false;
+                sellerDashboardSection.classList.add('hidden');
+                sellerNameInputGroup.classList.add('hidden');
+
+                // Clear local cart/wishlist
+                userCart = [];
+                userWishlist = [];
+                userAddress = null;
+                userOrders = [];
+
+                renderCart();
+                renderFavorites();
+                renderMyOrders();
+            }
+        });
+
+        // Toggle profile dropdown
+        userProfileToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+            if (!userProfileMenuContainer.contains(e.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        // --- INITIAL DATA LOADING ---
+        async function loadInitialData() {
+            // Load Banners
+            onValue(ref(database, 'banners'), (snapshot) => {
+                const banners = snapshot.val() || [];
+                if (banners.length > 0) {
+                    heroSlider.innerHTML = banners.map((banner, index) =>
+                        `<img src="${banner.image}" class="w-full flex-shrink-0 object-cover" alt="Banner ${index + 1}">`
+                    ).join('');
+                    updateSliderDots(banners.length); // Create dots after banners load
+                } else {
+                    // Fallback if no banners from DB
+                     heroSlider.innerHTML = `
+                         <img src="https://picsum.photos/1200/400?random=1" class="w-full flex-shrink-0 object-cover" alt="Banner 1">
+                         <img src="https://picsum.photos/1200/400?random=2" class="w-full flex-shrink-0 object-cover" alt="Banner 2">
+                         <img src="https://picsum.photos/1200/400?random=3" class="w-full flex-shrink-0 object-cover" alt="Banner 3">
+                     `;
+                     updateSliderDots(3); // For fallback images
+                }
+            }, { onlyOnce: true });
+
+            // Load Sellers for product cards
+            onValue(ref(database, 'users'), (snapshot) => {
+                const users = snapshot.val() || {};
+                allSellersData = {};
+                Object.keys(users).forEach(uid => {
+                    if (users[uid].profile?.isSeller) {
+                        allSellersData[uid] = users[uid].profile;
+                    }
+                });
+                // Re-render products if they depend on seller data
+                if (document.getElementById('home-page').classList.contains('active')) {
+                     renderProductCarousels(); // Re-render carousels
+                }
+                if (document.getElementById('listing-page').classList.contains('active')) {
+                     renderProductListing(currentFilterCategory, currentSortOrder, currentFilterProductType, false);
+                }
+                if (document.getElementById('search-results-page').classList.contains('active')) {
+                     renderSearchResults(currentSearchQuery, false);
+                }
+            });
+
+
+            // Load Products
+            onValue(ref(database, 'products'), (snapshot) => {
+                const products = snapshot.val() || {};
+                allProductsData = Object.keys(products).map(key => ({ id: key, ...products[key] })); // Ensure product IDs are strings and properties are correct
+                // Convert price to number once, or ensure it's treated as number for sorting/calculations
+                allProductsData.forEach(p => p.price = parseFloat(p.price));
+
+
+                renderProductCarousels(); // Update carousels with fetched data
+
+                // Re-render current page if it's a product listing/search page
+                if (document.getElementById('listing-page').classList.contains('active')) {
+                     renderProductListing(currentFilterCategory, currentSortOrder, currentFilterProductType, false);
+                }
+                if (document.getElementById('search-results-page').classList.contains('active')) {
+                     renderSearchResults(currentSearchQuery, false);
+                }
+                if (isCurrentUserSeller && currentUser) {
+                    renderSellerProducts(); // Update seller's own product list
+                }
+            });
+
+            renderCategories(); // Categories will always render based on DB
+        }
+
+        function renderProductCarousels() {
+            let productsToRender = [];
+            let categoriesFromProducts = [];
+            let isSampleData = false;
+
+            if (allProductsData.length > 0) {
+                productsToRender = allProductsData;
+                categoriesFromProducts = [...new Set(allProductsData.map(p => p.category))].filter(Boolean);
+            } else {
+                productsToRender = Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+                categoriesFromProducts = Object.keys(SAMPLE_PRODUCTS_CAROUSEL_DATA);
+                isSampleData = true;
+            }
+
+            const carouselContent = {};
+            productsToRender.forEach(p => {
+                const categoryName = p.category || 'Uncategorized';
+                if (!carouselContent[categoryName]) {
+                    carouselContent[categoryName] = [];
+                }
+                carouselContent[categoryName].push(p);
+            });
+
+            productCarouselsDiv.innerHTML = Object.entries(carouselContent)
+                .map(([title, products]) => renderProductCarousel(title, products))
+                .join('');
+
+            // Add message if displaying sample data
+            if (isSampleData) {
+                const sampleMessage = document.createElement('p');
+                sampleMessage.className = 'text-center text-gray-500 mt-8 text-sm';
+                sampleMessage.textContent = 'No products found in your database. Displaying sample products. Please use the admin panel to add your own!';
+                productCarouselsDiv.appendChild(sampleMessage);
+            }
+        }
+
+        // --- HOME PAGE SLIDER ---
+        let currentIndex = 0;
+        let sliderInterval;
+
+        // Define updateActiveDot first
+        function updateActiveDot() {
+            const dots = sliderDotsContainer.children;
+            Array.from(dots).forEach((dot, index) => {
+                if (index === currentIndex) {
+                    dot.classList.add('bg-white');
+                    dot.classList.remove('bg-white/50');
+                } else {
+                    dot.classList.remove('bg-white');
+                    dot.classList.add('bg-white/50');
+                }
+            });
+        }
+
+        function updateSlider() {
+            const slides = heroSlider.children;
+            if (slides.length === 0) return;
+            heroSlider.style.transform = `translateX(-${currentIndex * 100}%)`;
+            updateActiveDot();
+        }
+
+        function updateSliderDots(numSlides) {
+            sliderDotsContainer.innerHTML = '';
+            for (let i = 0; i < numSlides; i++) {
+                const dot = document.createElement('span');
+                dot.classList.add('w-2', 'h-2', 'rounded-full', 'bg-white/50', 'cursor-pointer');
+                dot.addEventListener('click', () => {
+                    currentIndex = i;
+                    updateSlider();
+                    resetSliderInterval();
+                });
+                sliderDotsContainer.appendChild(dot);
+            }
+            updateActiveDot();
+        }
+
+        function startSliderInterval() {
+            sliderInterval = setInterval(() => {
+                const slides = heroSlider.children;
+                if (slides.length === 0) return;
+                currentIndex = (currentIndex + 1) % slides.length;
+                updateSlider();
+            }, 5000);
+        }
+
+        function resetSliderInterval() {
+            clearInterval(sliderInterval);
+            startSliderInterval();
+        }
+
+        startSliderInterval(); // Start on page load
+
+
+        // Countdown Timer
+        const countdown = document.getElementById('countdown-timer');
+        let timeLeft = 2 * 60 * 60; // 2 hours
+        setInterval(() => {
+            timeLeft--;
+            if (timeLeft < 0) timeLeft = 0; // Prevent negative time
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
+            countdown.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+
+        // --- EVENT LISTENERS ---
+        document.body.addEventListener('click', async (e) => {
+            const navLink = e.target.closest('.nav-link');
+            if (navLink) {
+                e.preventDefault();
+                const pageId = navLink.dataset.page;
+                if (pageId) {
+                    if (navLink.classList.contains('category-link')) {
+                        renderProductListing(navLink.dataset.category, currentSortOrder, currentFilterProductType, true);
+                    } else if (pageId === 'home') {
+                        showPage('home');
+                        resetSliderInterval(); // Ensure slider restarts correctly
+                    } else {
+                        showPage(pageId);
+                    }
+                }
+            }
+
+            const addToCartBtn = e.target.closest('.add-to-cart-btn');
+            if (addToCartBtn) {
+                if (!currentUser) {
+                    showAlert('Please log in to add items to cart.', 'Login Required');
+                    return;
+                }
+                const productId = addToCartBtn.dataset.productId; // Keep as string
+                const existingItem = userCart.find(item => item.productId === productId);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    userCart.push({ productId, quantity: 1 });
+                }
+                await updateCartInFirebase(userCart);
+                showAlert('Product added to cart!', 'Success');
+            }
+
+            const buyNowBtn = e.target.closest('.buy-now-btn');
+            if (buyNowBtn) {
+                if (!currentUser) {
+                    showAlert('Please log in to buy items.', 'Login Required');
+                    return;
+                }
+                const productId = buyNowBtn.dataset.productId; // Keep as string
+                // Directly add to cart, then navigate to checkout
+                const existingItem = userCart.find(item => item.productId === productId);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    userCart.push({ productId, quantity: 1 });
+                }
+                await updateCartInFirebase(userCart);
+                showPage('delivery-address');
+            }
+
+            const removeFromCartBtn = e.target.closest('.remove-from-cart-btn');
+            if (removeFromCartBtn) {
+                const productId = removeFromCartBtn.dataset.productId;
+                userCart = userCart.filter(item => item.productId !== productId);
+                await updateCartInFirebase(userCart);
+            }
+
+            const cartQuantityBtn = e.target.closest('.cart-quantity-btn');
+            if (cartQuantityBtn) {
+                const productId = cartQuantityBtn.dataset.productId;
+                const action = cartQuantityBtn.dataset.action;
+                const itemIndex = userCart.findIndex(item => item.productId === productId);
+
+                if (itemIndex !== -1) {
+                    if (action === 'increment') {
+                        userCart[itemIndex].quantity++;
+                    } else if (action === 'decrement' && userCart[itemIndex].quantity > 1) {
+                        userCart[itemIndex].quantity--;
+                    }
+                    await updateCartInFirebase(userCart);
+                }
+            }
+
+            const productCard = e.target.closest('.product-card');
+            if (productCard && !addToCartBtn && !e.target.closest('.favorite-toggle')) {
+                const productId = productCard.dataset.productId;
+                showPage('details', productId);
+            }
+
+            const favoriteToggle = e.target.closest('.favorite-toggle');
+            if (favoriteToggle) {
+                e.stopPropagation(); // Prevent card click event
+                if (!currentUser) {
+                    showAlert('Please log in to add items to wishlist.', 'Login Required');
+                    return;
+                }
+                const productId = favoriteToggle.dataset.productId; // Keep as string
+                const icon = favoriteToggle.querySelector('i');
+
+                if (userWishlist.includes(productId)) {
+                    // Remove from wishlist
+                    userWishlist = userWishlist.filter(id => id !== productId);
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    favoriteToggle.classList.remove('text-red-500');
+                    showAlert('Removed from wishlist.', 'Wishlist');
+                } else {
+                    // Add to wishlist
+                    userWishlist.push(productId);
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    favoriteToggle.classList.add('text-red-500');
+                    showAlert('Added to wishlist!', 'Wishlist');
+                }
+                await updateWishlistInFirebase(userWishlist); // Store as simple array of IDs
+                renderFavorites(); // Re-render favorites page if active
+            }
+        });
+
+        // Search functionality
+        function handleSearch(query) {
+            if (query.trim()) {
+                currentSearchQuery = query;
+                renderSearchResults(query, true);
+            } else {
+                showAlert('Please enter a search query.', 'Empty Search');
+            }
+        }
+        desktopSearchBtn.addEventListener('click', () => handleSearch(desktopSearchInput.value));
+        mobileSearchBtn.addEventListener('click', () => handleSearch(mobileSearchInput.value));
+        desktopSearchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSearch(desktopSearchInput.value); });
+        mobileSearchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSearch(mobileSearchInput.value); });
+
+        // Filter and Sort Modal
+        document.getElementById('filter-sort-btn').addEventListener('click', () => filterSortModal.classList.add('flex'));
+        document.getElementById('listing-filter-sort-btn').addEventListener('click', () => filterSortModal.classList.add('flex'));
+        document.querySelector('#filter-sort-modal .modal-close-btn').addEventListener('click', () => filterSortModal.classList.remove('flex'));
+
+        applyFilterSortBtn.addEventListener('click', () => {
+            const selectedSort = document.querySelector('input[name="sort-price"]:checked')?.value || 'lowToHigh';
+            const selectedCategories = Array.from(document.querySelectorAll('input[name="filter-category"]:checked')).map(cb => cb.value);
+            const selectedProductType = document.querySelector('input[name="filter-product-type"]:checked')?.value || 'all';
+
+
+            // For simplicity, if multiple categories are selected, it filters by the first one or shows all if none.
+            const categoryToFilter = selectedCategories.length > 0 ? selectedCategories[0] : null;
+
+            if (document.getElementById('search-results-page').classList.contains('active')) {
+                currentFilterProductType = selectedProductType; // Apply type filter to search results
+                renderSearchResults(currentSearchQuery, false); // Filter search results
+            } else {
+                renderProductListing(categoryToFilter, selectedSort, selectedProductType, false); // Filter general listing
+            }
+            filterSortModal.classList.remove('flex');
+        });
+
+        // --- PROFILE PAGE ---
+        profilePicUpload.addEventListener('change', async (e) => {
+            if (!currentUser) {
+                showAlert('Please log in to upload a profile picture.', 'Login Required');
+                return;
+            }
+            const file = e.target.files[0];
+            if (file) {
+                const imageRef = storageRef(storage, `user_profiles/${currentUser.uid}/profile.jpg`);
+                try {
+                    await uploadBytes(imageRef, file);
+                    const photoURL = await getDownloadURL(imageRef);
+                    await update(ref(database, `users/${currentUser.uid}/profile`), { profilePic: photoURL });
+                    showAlert('Profile picture updated successfully!');
+                } catch (error) {
+                    console.error('Error uploading profile picture:', error);
+                    showAlert('Failed to upload profile picture. Please try again.', 'Error');
+                }
+            }
+        });
+
+        updateProfileBtn.addEventListener('click', async () => {
+            if (!currentUser) {
+                showAlert('Please log in to update your profile.', 'Login Required');
+                return;
+            }
+            const newName = profileNameInput.value.trim();
+            const newSellerName = profileSellerNameInput.value.trim();
+            if (newName) {
+                try {
+                    const updates = { name: newName };
+                    if (isCurrentUserSeller) {
+                        updates.sellerName = newSellerName;
+                    }
+                    await update(ref(database, `users/${currentUser.uid}/profile`), updates);
+                    showAlert('Profile updated successfully!', 'Success');
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+                    showAlert('Failed to update profile. Please try again.', 'Error');
+                }
+            } else {
+                showAlert('Name cannot be empty.', 'Validation Error');
+            }
+        });
+
+        function renderProfilePage() {
+            if (!currentUser) {
+                // Show login/signup view if not logged in
+                document.getElementById('profile-view').classList.add('hidden');
+                document.getElementById('login-signup-view').classList.remove('hidden');
+                document.getElementById('login-signup-view').innerHTML = `
+                    <h2 class="text-2xl font-bold mb-4">Login or Sign Up</h2>
+                    <p class="mb-6 text-gray-600">To access your profile, please log in or create an account.</p>
+                    <button class="w-full bg-primary text-white font-bold py-3 rounded-md hover:bg-primary-dark transition" onclick="document.getElementById('login-modal').classList.add('flex');">Login / Sign Up</button>
+                `;
+            } else {
+                // Show actual profile view
+                document.getElementById('profile-view').classList.remove('hidden');
+                document.getElementById('login-signup-view').classList.add('hidden');
+                // Data is already fetched by onAuthStateChanged listener, just ensure fields are populated
+            }
+        }
+
+        // --- SELLER PRODUCT MANAGEMENT ---
+        sellerAddProductForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser || !isCurrentUserSeller) {
+                showAlert('You must be logged in as a seller to add products.', 'Permission Denied');
+                return;
+            }
+
+            const newProduct = {
+                name: sellerProductNameInput.value.trim(),
+                description: sellerProductDescriptionInput.value.trim(),
+                price: parseFloat(sellerProductPriceInput.value).toFixed(2),
+                category: sellerProductCategorySelect.value,
+                type: sellerProductTypeSelect.value,
+                image: sellerProductImageUrlInput.value.trim(),
+                sellerId: currentUser.uid,
+                rating: 0, // Default rating
+                numReviews: 0, // Default reviews
+                createdAt: serverTimestamp()
+            };
+
+            try {
+                const newProductRef = push(ref(database, 'products'));
+                const newProductId = newProductRef.key;
+                await set(ref(database, `products/${newProductId}`), { id: newProductId, ...newProduct });
+                showAlert('Product added successfully!', 'Success');
+                sellerAddProductForm.reset();
+            }
+            catch (error) {
+                console.error('Error adding product:', error);
+                showAlert('Failed to add product. Please try again.', 'Error');
+            }
+        });
+
+        function renderSellerProducts() {
+            if (!currentUser || !isCurrentUserSeller) {
+                sellerProductsList.innerHTML = '';
+                sellerProductsEmptyMessage.classList.remove('hidden');
+                return;
+            }
+            // Use allProductsData directly, it's globally synced
+            const sellersProducts = allProductsData.filter(p => p.sellerId === currentUser.uid);
+
+            if (sellersProducts.length === 0) {
+                sellerProductsList.innerHTML = '';
+                sellerProductsEmptyMessage.classList.remove('hidden');
+            } else {
+                sellerProductsEmptyMessage.classList.add('hidden');
+                sellerProductsList.innerHTML = sellersProducts.map(renderSellerProductCard).join('');
+            }
+        }
+
+        sellerProductsList.addEventListener('click', async (e) => {
+            const editBtn = e.target.closest('.seller-edit-product-btn');
+            const deleteBtn = e.target.closest('.seller-delete-product-btn');
+
+            if (editBtn) {
+                const productId = editBtn.dataset.productId;
+                openSellerProductEditForm(productId);
+            } else if (deleteBtn) {
+                const productId = deleteBtn.dataset.productId;
+                showAlert('Are you sure you want to delete this product?', 'Confirm Delete', true, async () => {
+                    await deleteSellerProduct(productId);
+                });
+            }
+        });
+
+        async function openSellerProductEditForm(productId) {
+            const product = allProductsData.find(p => p.id === productId && p.sellerId === currentUser.uid);
+            if (!product) {
+                showAlert('Product not found or you do not have permission to edit it.', 'Error');
+                return;
+            }
+
+            editingSellerProductId = productId;
+            sellerEditProductFormTitle.textContent = `Edit Product: ${product.name}`;
+
+            editSellerProductNameInput.value = product.name || '';
+            editSellerProductDescriptionInput.value = product.description || '';
+            editSellerProductPriceInput.value = product.price || '';
+            editSellerProductCategorySelect.value = product.category || '';
+            editSellerProductTypeSelect.value = product.type || 'physical';
+            editSellerProductImageUrlInput.value = product.image || '';
+
+            sellerProductEditModal.classList.add('flex');
+        }
+
+        sellerEditProductForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser || !isCurrentUserSeller || !editingSellerProductId) {
+                showAlert('You must be logged in as a seller to edit products.', 'Permission Denied');
+                return;
+            }
+
+            const updatedProduct = {
+                name: editSellerProductNameInput.value.trim(),
+                description: editSellerProductDescriptionInput.value.trim(),
+                price: parseFloat(editSellerProductPriceInput.value).toFixed(2),
+                category: editSellerProductCategorySelect.value,
+                type: editSellerProductTypeSelect.value,
+                image: editSellerProductImageUrlInput.value.trim(),
+            };
+
+            try {
+                await update(ref(database, `products/${editingSellerProductId}`), updatedProduct);
+                showAlert('Product updated successfully!', 'Success');
+                sellerProductEditModal.classList.remove('flex');
+                editingSellerProductId = null; // Clear editing state
+            } catch (error) {
+                console.error('Error updating product:', error);
+                showAlert('Failed to update product. Please try again.', 'Error');
+            }
+        });
+
+        async function deleteSellerProduct(productId) {
+            if (!currentUser || !isCurrentUserSeller) {
+                showAlert('You must be logged in as a seller to delete products.', 'Permission Denied');
+                return;
+            }
+            const product = allProductsData.find(p => p.id === productId);
+            if (!product || product.sellerId !== currentUser.uid) {
+                showAlert('Product not found or you do not have permission to delete it.', 'Error');
+                return;
+            }
+
+            try {
+                await remove(ref(database, `products/${productId}`));
+                showAlert('Product deleted successfully!', 'Success');
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                showAlert('Failed to delete product. Please try again.', 'Error');
+            }
+        }
+
+
+        // --- MY ORDERS PAGE ---
+        function renderMyOrders() {
+            if (!currentUser) {
+                ordersContainer.innerHTML = '';
+                ordersEmptyMessage.textContent = 'Please log in to view your orders.';
+                ordersEmptyMessage.classList.remove('hidden');
+                return;
+            }
+
+            if (userOrders.length === 0) {
+                ordersContainer.innerHTML = '';
+                ordersEmptyMessage.textContent = 'You have no past orders.';
+                ordersEmptyMessage.classList.remove('hidden');
+                return;
+            }
+            ordersEmptyMessage.classList.add('hidden');
+
+            ordersContainer.innerHTML = userOrders.sort((a,b) => b.orderDate - a.orderDate).map(order => {
+                const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
+                const orderDate = new Date(order.orderDate).toLocaleDateString();
+                return `
+                    <div class="bg-white p-4 rounded-lg shadow-md">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold text-lg">Order ID: ${order.orderId}</h4>
+                            <span class="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full">${order.status}</span>
+                        </div>
+                        <p class="text-gray-600 mb-1">Order Date: ${orderDate}</p>
+                        <p class="text-gray-600 mb-1">Items: ${totalItems}</p>
+                        <p class="font-bold text-xl">Total: ₹${order.total.toLocaleString('en-IN')}</p>
+                        <button class="mt-3 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition view-order-details-btn" data-order-id="${order.orderId}">View Details</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- TRACK ORDER PAGE ---
+        function renderTrackOrder(orderId) {
+            const order = userOrders.find(o => o.orderId === orderId);
+            if (!order) {
+                trackOrderIdSpan.textContent = `#${orderId}`;
+                orderTimeline.innerHTML = '';
+                trackOrderNotFound.classList.remove('hidden');
+                return;
+            }
+            trackOrderNotFound.classList.add('hidden');
+
+            trackOrderIdSpan.textContent = `#${orderId}`;
+            const statuses = [
+                { id: 'placed', label: 'Order Placed', icon: 'fa-clipboard-list' },
+                { id: 'progress', label: 'In Progress', icon: 'fa-cog' },
+                { id: 'shipped', label: 'Shipped', icon: 'fa-truck' },
+                { id: 'delivered', label: 'Delivered', icon: 'fa-box-open' },
+                { id: 'cancelled', label: 'Cancelled', icon: 'fa-times-circle' } // This would be an alternative final state
+            ];
+
+            orderTimeline.innerHTML = statuses.map(status => {
+                const isActive = order.status.toLowerCase() === status.id || (order.status.toLowerCase() !== 'cancelled' && statuses.indexOf(status) <= statuses.findIndex(s => s.id === order.status.toLowerCase()));
+                const isCancelled = order.status.toLowerCase() === 'cancelled' && status.id === 'cancelled';
+                const statusDate = order.statusHistory?.[status.id] ? new Date(order.statusHistory[status.id]).toLocaleString() : '';
+                return `
+                    <div class="timeline-item ${isActive ? 'active' : ''} ${isCancelled ? 'text-red-500' : ''}">
+                        <div class="timeline-item-icon">
+                            <i class="fas fa-check"></i>
+                            <i class="fas ${status.icon}"></i>
+                        </div>
+                        <div class="timeline-item-content">
+                            <h4 class="font-semibold">${status.label}</h4>
+                            <p class="text-sm text-gray-500">${statusDate}</p>
+                            ${order.status.toLowerCase() === status.id && order.statusMessage ? `<p class="text-sm mt-1">${order.statusMessage}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        document.body.addEventListener('click', (e) => {
+            const viewDetailsBtn = e.target.closest('.view-order-details-btn');
+            if (viewDetailsBtn) {
+                const orderId = viewDetailsBtn.dataset.orderId;
+                showPage('track-order', null, orderId);
+            }
+        });
+
+        // --- DELIVERY ADDRESS & CHECKOUT ---
+        function checkCartForDigitalProducts() {
+            const allDigital = userCart.every(item => {
+                const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+                const product = productsToUse.find(p => p.id === item.productId);
+                return product && product.type === 'digital';
+            });
+
+            if (allDigital && userCart.length > 0) {
+                deliveryAddressFormContainer.classList.add('hidden');
+                digitalCheckoutMessage.classList.remove('hidden');
+            } else {
+                deliveryAddressFormContainer.classList.remove('hidden');
+                digitalCheckoutMessage.classList.add('hidden');
+            }
+        }
+
+        pincodeInput.addEventListener('input', async () => {
+            const pincode = pincodeInput.value;
+            if (pincode.length === 6) {
+                const data = await fetchJSON(`https://api.postalpincode.in/pincode/${pincode}`);
+                if (data && data[0] && data[0].Status === 'Success') {
+                    const postOffice = data[0].PostOffice[0];
+                    cityInput.value = postOffice.District;
+                    stateInput.value = postOffice.State;
+                } else {
+                    cityInput.value = '';
+                    stateInput.value = '';
+                    showAlert('Invalid Pincode or no data found.', 'Pincode Error');
+                }
+            } else {
+                cityInput.value = '';
+                stateInput.value = '';
+            }
+        });
+
+        addressForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) {
+                showAlert('Please log in to place an order.', 'Login Required');
+                return;
+            }
+
+            if (userCart.length === 0) {
+                showAlert('Your cart is empty. Please add items before placing an order.', 'Empty Cart');
+                return;
+            }
+
+            const addressDetails = {
+                fullName: fullNameInput.value,
+                mobileNumber: mobileNumberInput.value,
+                pincode: pincodeInput.value,
+                city: cityInput.value,
+                state: stateInput.value,
+                addressLine1: addressLine1Input.value,
+                addressLine2: addressLine2Input.value,
+            };
+
+            // Save/Update user address in Firebase
+            await set(ref(database, `users/${currentUser.uid}/address`), addressDetails);
+
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+            const totalAmount = userCart.reduce((acc, item) => {
+                const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+                const product = productsToUse.find(p => p.id === item.productId);
+                if (!product) return acc; // Handle case where product might be missing
+                return acc + (parseFloat(product.price) * item.quantity);
+            }, 0);
+
+            if (paymentMethod === 'Online') {
+                // PayPal Integration (Dummy/Placeholder)
+                // In a real app, this would initiate a PayPal checkout flow
+                showAlert('Online payment selected. Integrating PayPal (dummy action).', 'Payment');
+                // Assume successful PayPal payment for now
+                setTimeout(() => placeOrder(addressDetails, totalAmount, paymentMethod, 'physical'), 1000);
+            } else {
+                placeOrder(addressDetails, totalAmount, paymentMethod, 'physical');
+            }
+        });
+
+        placeDigitalOrderBtn.addEventListener('click', async () => {
+             if (!currentUser) {
+                showAlert('Please log in to place an order.', 'Login Required');
+                return;
+            }
+
+            if (userCart.length === 0) {
+                showAlert('Your cart is empty. Please add items before placing an order.', 'Empty Cart');
+                return;
+            }
+            const totalAmount = userCart.reduce((acc, item) => {
+                const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+                const product = productsToUse.find(p => p.id === item.productId);
+                if (!product) return acc;
+                return acc + (parseFloat(product.price) * item.quantity);
+            }, 0);
+            const paymentMethod = document.querySelector('input[name="payment-method-digital"]:checked').value;
+
+            // For digital products, address is not needed, pass a placeholder
+            const addressDetails = {
+                fullName: currentUser.displayName || currentUser.email.split('@')[0],
+                email: currentUser.email,
+                message: "No physical address needed for digital products."
+            };
+
+            if (paymentMethod === 'Online') {
+                showAlert('Online payment selected for digital products. Integrating PayPal (dummy action).', 'Payment');
+                setTimeout(() => placeOrder(addressDetails, totalAmount, paymentMethod, 'digital'), 1000);
+            } else {
+                // COD not applicable for digital products in real scenario, but based on UI, only online is shown.
+                // If COD were an option, it would require a different flow.
+                 showAlert('For digital products, only online payment is supported.', 'Payment Method Error');
+            }
+        });
+
+
+        async function placeOrder(address, total, paymentMethod, orderType) {
+            if (!currentUser) return;
+
+            const orderId = `ORD${Date.now()}`;
+            const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
+
+            const orderItems = userCart.map(item => {
+                const product = productsToUse.find(p => p.id === item.productId);
+                return {
+                    productId: item.productId,
+                    name: product.name,
+                    image: product.image,
+                    price: product.price,
+                    quantity: item.quantity,
+                    type: product.type // Include product type in order item
+                };
+            });
+
+            const newOrder = {
+                orderId: orderId,
+                userId: currentUser.uid,
+                orderDate: Date.now(),
+                items: orderItems,
+                address: address, // Will be simplified for digital orders
+                total: total,
+                paymentMethod: paymentMethod,
+                status: 'placed', // initial status
+                statusHistory: {
+                    placed: Date.now()
+                },
+                statusMessage: 'Your order has been placed successfully.',
+                orderType: orderType // 'physical' or 'digital'
+            };
+
+            try {
+                // Save order to Firebase
+                await set(ref(database, `orders/${currentUser.uid}/${orderId}`), newOrder);
+
+                // Clear cart in Firebase
+                await remove(ref(database, `carts/${currentUser.uid}`));
+                userCart = []; // Clear local cart as well
+
+                confirmedOrderIdSpan.textContent = orderId;
+                showPage('order-confirmation');
+                showAlert(`Order ${orderId} placed successfully!`, 'Order Confirmed');
+            } catch (error) {
+                console.error('Error placing order:', error);
+                showAlert('Failed to place order. Please try again.', 'Order Failed');
+            }
+        }
+
+        // --- INITIALIZATION ---
+        function init() {
+            loadInitialData();
+            renderCart(); // Initial render for cart, will update on auth state change
+            renderFavorites(); // Initial render for favorites
+            renderMyOrders(); // Initial render for orders
+            showPage('home'); // Always start on the home page
+        }
+
+        init();
+
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

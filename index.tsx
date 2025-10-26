@@ -22,16 +22,20 @@ import {
     getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
 // Your web app's Firebase configuration
-// Replace with your actual Firebase project configuration
 const firebaseConfig = {
-    apiKey: "YOUR_FIREBASE_API_KEY",
-    authDomain: "indiacart-e-commerce-app.firebaseapp.com",
-    projectId: "indiacart-e-commerce-app",
-    storageBucket: "indiacart-e-commerce-app.appspot.com",
-    messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID",
-    appId: "YOUR_FIREBASE_APP_ID",
-    databaseURL: "https://indiacart-e-commerce-app-default-rtdb.firebaseio.com" // Add if not implicitly included by project ID
+  apiKey: "AIzaSyAkefZxw5CyZBSvXDI0IK5d8uqQphJA3Ho",
+  authDomain: "indiacart-e-commerce-app.firebaseapp.com",
+  databaseURL: "https://indiacart-e-commerce-app-default-rtdb.firebaseio.com",
+  projectId: "indiacart-e-commerce-app",
+  storageBucket: "indiacart-e-commerce-app.firebasestorage.app",
+  messagingSenderId: "557161274487",
+  appId: "1:557161274487:web:bafaa15e6fb8ba5484ba72"
 };
 
 // Initialize Firebase

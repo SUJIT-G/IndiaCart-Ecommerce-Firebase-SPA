@@ -28,12 +28,6 @@
             font-family: 'Inter', sans-serif;
             background-color: #f1f3f6;
             -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
-            min-height: 100vh; /* Ensure content pushes footer to bottom */
-            display: flex;
-            flex-direction: column;
-        }
-        main {
-            flex-grow: 1; /* Allow main content to expand */
         }
         .page {
             display: none;
@@ -226,7 +220,6 @@
             cursor: pointer;
         }
     </style>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body>
 
@@ -410,10 +403,6 @@
                         <label for="profile-name-input" class="block text-gray-700 text-sm font-bold mb-2">Your Name</label>
                         <input type="text" id="profile-name-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" placeholder="Enter your name">
                     </div>
-                    <div id="seller-name-input-group" class="hidden">
-                        <label for="profile-seller-name-input" class="block text-gray-700 text-sm font-bold mb-2">Seller Name (Public)</label>
-                        <input type="text" id="profile-seller-name-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" placeholder="Your public seller name">
-                    </div>
                     <button id="update-profile-btn" class="w-full bg-primary text-white font-bold py-2 px-4 rounded hover:bg-primary-dark transition">Update Profile</button>
                 </div>
 
@@ -422,55 +411,6 @@
                     <a href="#" class="block text-gray-800 hover:text-primary nav-link" data-page="delivery-address"><i class="fas fa-map-marker-alt mr-3 w-5"></i> Manage Address</a>
                     <a href="#" class="block text-gray-800 hover:text-primary"><i class="fas fa-headset mr-3 w-5"></i> Contact Us</a>
                     <button id="profile-logout-btn" class="w-full text-left block text-gray-800 hover:text-primary"><i class="fas fa-sign-out-alt mr-3 w-5"></i> Logout</button>
-
-                    <div id="seller-dashboard-section" class="mt-8 pt-6 border-t border-gray-200 hidden">
-                        <h3 class="text-xl font-bold mb-4">Seller Dashboard</h3>
-                        <p class="text-gray-600 mb-4">Manage your products here.</p>
-
-                        <!-- Add New Product Form for Sellers -->
-                        <div class="bg-gray-50 p-4 rounded-lg mb-6">
-                            <h4 class="font-bold text-lg mb-3">Add New Product</h4>
-                            <form id="seller-add-product-form" class="space-y-3">
-                                <div>
-                                    <label for="seller-product-name" class="block text-gray-700 text-sm font-bold mb-1">Product Name</label>
-                                    <input type="text" id="seller-product-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
-                                </div>
-                                <div>
-                                    <label for="seller-product-description" class="block text-gray-700 text-sm font-bold mb-1">Description</label>
-                                    <textarea id="seller-product-description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required></textarea>
-                                </div>
-                                <div>
-                                    <label for="seller-product-price" class="block text-gray-700 text-sm font-bold mb-1">Price (₹)</label>
-                                    <input type="number" id="seller-product-price" step="0.01" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
-                                </div>
-                                <div>
-                                    <label for="seller-product-category" class="block text-gray-700 text-sm font-bold mb-1">Category</label>
-                                    <select id="seller-product-category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
-                                        <!-- Categories will be injected here -->
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="seller-product-type" class="block text-gray-700 text-sm font-bold mb-1">Product Type</label>
-                                    <select id="seller-product-type" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
-                                        <option value="physical">Physical</option>
-                                        <option value="digital">Digital</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="seller-product-image-url" class="block text-gray-700 text-sm font-bold mb-1">Image URL</label>
-                                    <input type="url" id="seller-product-image-url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
-                                </div>
-                                <button type="submit" class="w-full bg-primary text-white font-bold py-2 px-4 rounded hover:bg-primary-dark transition">Add Product</button>
-                            </form>
-                        </div>
-
-                        <!-- Seller's Product List -->
-                        <h4 class="font-bold text-lg mb-3">Your Listed Products</h4>
-                        <div id="seller-products-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- Seller's products will be injected here -->
-                            <p id="seller-products-empty-message" class="text-center text-gray-500 col-span-full hidden">You haven't listed any products yet.</p>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div id="login-signup-view" class="bg-white p-6 rounded-lg shadow-lg hidden">
@@ -499,67 +439,52 @@
         <!-- Delivery Address Screen -->
         <div id="delivery-address-page" class="page bg-white p-6 rounded-lg shadow-lg">
             <h2 class="text-2xl font-bold mb-6">Delivery Address & Payment</h2>
-            <div id="delivery-address-form-container">
-                <form id="address-form" class="space-y-4">
+            <form id="address-form" class="space-y-4">
+                <div>
+                    <label for="full-name" class="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
+                    <input type="text" id="full-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" required>
+                </div>
+                <div>
+                    <label for="mobile-number" class="block text-gray-700 text-sm font-bold mb-2">Mobile Number</label>
+                    <input type="tel" id="mobile-number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" required>
+                </div>
+                <div>
+                    <label for="pincode" class="block text-gray-700 text-sm font-bold mb-2">Pincode</label>
+                    <input type="text" id="pincode" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" maxlength="6" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="full-name" class="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
-                        <input type="text" id="full-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" required>
-                    </div>
-                    <div>
-                        <label for="mobile-number" class="block text-gray-700 text-sm font-bold mb-2">Mobile Number</label>
-                        <input type="tel" id="mobile-number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" required>
-                    </div>
-                    <div>
-                        <label for="pincode" class="block text-gray-700 text-sm font-bold mb-2">Pincode</label>
-                        <input type="text" id="pincode" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" maxlength="6" required>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="city" class="block text-gray-700 text-sm font-bold mb-2">City</label>
-                            <input type="text" id="city" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-gray-100" readonly>
-                        </div>
-                        <div>
-                            <label for="state" class="block text-gray-700 text-sm font-bold mb-2">State</label>
-                            <input type="text" id="state" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-gray-100" readonly>
-                        </div>
+                        <label for="city" class="block text-gray-700 text-sm font-bold mb-2">City</label>
+                        <input type="text" id="city" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-gray-100" readonly>
                     </div>
                     <div>
-                        <label for="address-line1" class="block text-gray-700 text-sm font-bold mb-2">Address Line 1 (House No., Building Name)</label>
-                        <input type="text" id="address-line1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" required>
+                        <label for="state" class="block text-gray-700 text-sm font-bold mb-2">State</label>
+                        <input type="text" id="state" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-gray-100" readonly>
                     </div>
-                    <div>
-                        <label for="address-line2" class="block text-gray-700 text-sm font-bold mb-2">Address Line 2 (Area, Colony, Street, Sector)</label>
-                        <input type="text" id="address-line2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light">
-                    </div>
+                </div>
+                <div>
+                    <label for="address-line1" class="block text-gray-700 text-sm font-bold mb-2">Address Line 1 (House No., Building Name)</label>
+                    <input type="text" id="address-line1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light" required>
+                </div>
+                <div>
+                    <label for="address-line2" class="block text-gray-700 text-sm font-bold mb-2">Address Line 2 (Area, Colony, Street, Sector)</label>
+                    <input type="text" id="address-line2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-light">
+                </div>
 
-                    <div class="mt-6 border-t pt-4">
-                        <h3 class="text-xl font-bold mb-4">Payment Method</h3>
-                        <div class="space-y-2">
-                            <label class="flex items-center">
-                                <input type="radio" name="payment-method" value="COD" class="mr-2 text-primary" checked> Cash on Delivery
-                            </label>
-                            <label class="flex items-center">
-                                <input type="radio" name="payment-method" value="Online" class="mr-2 text-primary"> Online Payment (PayPal)
-                            </label>
-                        </div>
-                    </div>
-
-                    <button type="submit" id="place-order-btn" class="w-full bg-primary text-white font-bold py-3 rounded-md hover:bg-primary-dark transition mt-6">Place Order</button>
-                </form>
-            </div>
-            <div id="digital-checkout-message" class="hidden bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md" role="alert">
-                <p class="font-bold">No Delivery Address Needed</p>
-                <p>Your cart contains only digital products. You will receive access instructions via email after purchase.</p>
                 <div class="mt-6 border-t pt-4">
                     <h3 class="text-xl font-bold mb-4">Payment Method</h3>
                     <div class="space-y-2">
                         <label class="flex items-center">
-                            <input type="radio" name="payment-method-digital" value="Online" class="mr-2 text-primary" checked> Online Payment (PayPal)
+                            <input type="radio" name="payment-method" value="COD" class="mr-2 text-primary" checked> Cash on Delivery
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="payment-method" value="Online" class="mr-2 text-primary"> Online Payment (PayPal)
                         </label>
                     </div>
                 </div>
-                 <button type="button" id="place-digital-order-btn" class="w-full bg-primary text-white font-bold py-3 rounded-md hover:bg-primary-dark transition mt-6">Place Order</button>
-            </div>
+
+                <button type="submit" id="place-order-btn" class="w-full bg-primary text-white font-bold py-3 rounded-md hover:bg-primary-dark transition mt-6">Place Order</button>
+            </form>
         </div>
 
         <!-- Order Confirmation Screen -->
@@ -707,63 +632,8 @@
                     <!-- Categories will be injected here -->
                 </div>
             </div>
-            
-            <div class="mb-6">
-                <h4 class="font-bold text-lg mb-2">Filter By Product Type</h4>
-                <div class="flex flex-col space-y-2">
-                    <label class="flex items-center">
-                        <input type="radio" name="filter-product-type" value="all" class="mr-2 text-primary" checked> All Types
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="filter-product-type" value="physical" class="mr-2 text-primary"> Physical Products
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="filter-product-type" value="digital" class="mr-2 text-primary"> Digital Products
-                    </label>
-                </div>
-            </div>
 
             <button id="apply-filter-sort-btn" class="w-full bg-primary text-white font-bold py-3 rounded-md hover:bg-primary-dark transition">Apply Filters & Sort</button>
-        </div>
-    </div>
-
-    <!-- Seller Product Edit Modal -->
-    <div id="seller-product-edit-modal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close-btn" onclick="document.getElementById('seller-product-edit-modal').classList.remove('flex')">&times;</button>
-            <h3 id="seller-edit-product-form-title" class="text-xl font-bold mb-4">Edit Product</h3>
-            <form id="seller-edit-product-form" class="space-y-4">
-                <div>
-                    <label for="edit-seller-product-name" class="block text-gray-700 text-sm font-bold mb-1">Product Name</label>
-                    <input type="text" id="edit-seller-product-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
-                </div>
-                <div>
-                    <label for="edit-seller-product-description" class="block text-gray-700 text-sm font-bold mb-1">Description</label>
-                    <textarea id="edit-seller-product-description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required></textarea>
-                </div>
-                <div>
-                    <label for="edit-seller-product-price" class="block text-gray-700 text-sm font-bold mb-1">Price (₹)</label>
-                    <input type="number" id="edit-seller-product-price" step="0.01" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
-                </div>
-                <div>
-                    <label for="edit-seller-product-category" class="block text-gray-700 text-sm font-bold mb-1">Category</label>
-                    <select id="edit-seller-product-category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
-                        <!-- Categories will be injected here -->
-                    </select>
-                </div>
-                <div>
-                    <label for="edit-seller-product-type" class="block text-gray-700 text-sm font-bold mb-1">Product Type</label>
-                    <select id="edit-seller-product-type" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
-                        <option value="physical">Physical</option>
-                        <option value="digital">Digital</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="edit-seller-product-image-url" class="block text-gray-700 text-sm font-bold mb-1">Image URL</label>
-                    <input type="url" id="edit-seller-product-image-url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
-                </div>
-                <button type="submit" class="w-full bg-primary text-white font-bold py-2 px-4 rounded hover:bg-primary-dark transition">Save Changes</button>
-            </form>
         </div>
     </div>
 
@@ -788,9 +658,7 @@
             set,
             push,
             remove,
-            update,
-            serverTimestamp,
-            get
+            update
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
         import {
             getStorage,
@@ -799,7 +667,6 @@
             getDownloadURL
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-        // Your web app's Firebase configuration
         // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -818,19 +685,13 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-    
         const auth = getAuth(app);
         const database = getDatabase(app);
         const storage = getStorage(app);
 
         let currentUser = null;
         let allProductsData = []; // Store all products fetched from Firebase
-        let allSellersData = {}; // Store seller profiles {uid: {sellerName, ...}}
-        let allCategoriesData = []; // Store all categories from Firebase
-
         let currentFilterCategory = null;
-        let currentFilterProductType = 'all'; // 'all', 'physical', 'digital'
         let currentSortOrder = 'lowToHigh';
         let currentSearchQuery = '';
 
@@ -839,28 +700,6 @@ const app = initializeApp(firebaseConfig);
         let userWishlist = [];
         let userAddress = null; // Stored user address
         let userOrders = []; // Stored user orders
-        let isCurrentUserSeller = false;
-
-        // --- SAMPLE DATA (for initial display if Firebase is empty) ---
-        const SAMPLE_PRODUCTS_CAROUSEL_DATA = {
-            "Top Deals": [
-                { id: 'sample1', name: "Wireless Earbuds", price: "1299", rating: 4.5, image: "https://picsum.photos/200/200?random=1", type: "physical", category: "Electronics" },
-                { id: 'sample2', name: "Smart Watch", price: "2499", rating: 4.7, image: "https://picsum.photos/200/200?random=2", type: "physical", category: "Electronics" },
-                { id: 'sample3', name: "Bluetooth Speaker", price: "999", rating: 4.3, image: "https://picsum.photos/200/200?random=3", type: "physical", category: "Electronics" },
-                { id: 'sample4', name: "Ebook: Learn Coding", price: "499", rating: 4.8, image: "https://picsum.photos/200/200?random=4", type: "digital", category: "Books" },
-                { id: 'sample5', name: "Graphic Design Template", price: "199", rating: 4.6, image: "https://picsum.photos/200/200?random=5", type: "digital", category: "Digital" },
-            ],
-            "Best of Electronics": [
-                { id: 'sample6', name: "4K UHD Television", price: "34999", rating: 4.8, image: "https://picsum.photos/200/200?random=6", type: "physical", category: "Electronics" },
-                { id: 'sample7', name: "Laptop Pro", price: "79999", rating: 4.9, image: "https://picsum.photos/200/200?random=7", type: "physical", category: "Electronics" },
-                { id: 'sample8', name: "DSLR Camera", price: "45999", rating: 4.7, image: "https://picsum.photos/200/200?random=8", type: "physical", category: "Electronics" },
-            ],
-            "Trending Mobiles": [
-                { id: 'sample9', name: "Smartphone X", price: "19999", rating: 4.5, image: "https://picsum.photos/200/200?random=9", type: "physical", category: "Mobiles" },
-                { id: 'sample10', name: "Smartphone Y", price: "25999", rating: 4.6, image: "https://picsum.photos/200/200?random=10", type: "physical", category: "Mobiles" },
-            ]
-        };
-
 
         // --- UI ELEMENTS ---
         const loginModal = document.getElementById('login-modal');
@@ -915,22 +754,10 @@ const app = initializeApp(firebaseConfig);
         const profilePicDisplay = document.getElementById('profile-pic-display');
         const profilePicUpload = document.getElementById('profile-pic-upload');
         const profileNameInput = document.getElementById('profile-name-input');
-        const profileSellerNameInput = document.getElementById('profile-seller-name-input');
-        const sellerNameInputGroup = document.getElementById('seller-name-input-group');
         const profileUserEmailSpan = document.getElementById('profile-user-email');
         const updateProfileBtn = document.getElementById('update-profile-btn');
         const headerProfilePic = document.getElementById('header-profile-pic');
         const headerUserName = document.getElementById('header-user-name');
-        const sellerDashboardSection = document.getElementById('seller-dashboard-section');
-        const sellerAddProductForm = document.getElementById('seller-add-product-form');
-        const sellerProductNameInput = document.getElementById('seller-product-name');
-        const sellerProductDescriptionInput = document.getElementById('seller-product-description');
-        const sellerProductPriceInput = document.getElementById('seller-product-price');
-        const sellerProductCategorySelect = document.getElementById('seller-product-category');
-        const sellerProductTypeSelect = document.getElementById('seller-product-type');
-        const sellerProductImageUrlInput = document.getElementById('seller-product-image-url');
-        const sellerProductsList = document.getElementById('seller-products-list');
-        const sellerProductsEmptyMessage = document.getElementById('seller-products-empty-message');
 
         const myOrdersPage = document.getElementById('my-orders-page');
         const ordersContainer = document.getElementById('orders-container');
@@ -951,10 +778,6 @@ const app = initializeApp(firebaseConfig);
         const addressLine1Input = document.getElementById('address-line1');
         const addressLine2Input = document.getElementById('address-line2');
         const placeOrderBtn = document.getElementById('place-order-btn');
-        const digitalCheckoutMessage = document.getElementById('digital-checkout-message');
-        const deliveryAddressFormContainer = document.getElementById('delivery-address-form-container');
-        const placeDigitalOrderBtn = document.getElementById('place-digital-order-btn');
-
 
         const orderConfirmationPage = document.getElementById('order-confirmation-page');
         const confirmedOrderIdSpan = document.getElementById('confirmed-order-id');
@@ -965,20 +788,7 @@ const app = initializeApp(firebaseConfig);
 
         const filterSortModal = document.getElementById('filter-sort-modal');
         const filterCategoriesContainer = document.getElementById('filter-categories-container');
-        const filterProductTypeRadios = document.querySelectorAll('input[name="filter-product-type"]');
         const applyFilterSortBtn = document.getElementById('apply-filter-sort-btn');
-
-        const sellerProductEditModal = document.getElementById('seller-product-edit-modal');
-        const sellerEditProductFormTitle = document.getElementById('seller-edit-product-form-title');
-        const sellerEditProductForm = document.getElementById('seller-edit-product-form');
-        const editSellerProductNameInput = document.getElementById('edit-seller-product-name');
-        const editSellerProductDescriptionInput = document.getElementById('edit-seller-product-description');
-        const editSellerProductPriceInput = document.getElementById('edit-seller-product-price');
-        const editSellerProductCategorySelect = document.getElementById('edit-seller-product-category');
-        const editSellerProductTypeSelect = document.getElementById('edit-seller-product-type');
-        const editSellerProductImageUrlInput = document.getElementById('edit-seller-product-image-url');
-        let editingSellerProductId = null;
-
 
         // --- GLOBAL FUNCTIONS & HELPERS ---
         function showPage(pageId, productId = null, orderId = null) {
@@ -1001,9 +811,7 @@ const app = initializeApp(firebaseConfig);
             } else if (pageId === 'search-results') {
                 renderSearchResults(currentSearchQuery, true); // Re-render with current query
             } else if (pageId === 'listing') {
-                renderProductListing(currentFilterCategory, currentSortOrder, currentFilterProductType, true); // Re-render with current filters
-            } else if (pageId === 'delivery-address') {
-                checkCartForDigitalProducts();
+                renderProductListing(currentFilterCategory, currentSortOrder, true); // Re-render with current filters
             }
         }
 
@@ -1029,17 +837,12 @@ const app = initializeApp(firebaseConfig);
 
         // --- PRODUCT RENDERING ---
         function renderProductCard(product, isFavorite = false) {
-            const priceNum = parseFloat(product.price); // Assumes price is already clean number or can be parsed
-            const sellerInfo = product.sellerId ? (allSellersData[product.sellerId]?.sellerName || 'Seller') : 'Platform';
+            const priceNum = parseFloat(product.price.replace(/,/g, ''));
             return `
                 <div class="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between hover:shadow-xl transition-shadow duration-300 product-card cursor-pointer" data-product-id="${product.id}">
                     <img src="${product.image || `https://picsum.photos/200/200?random=${product.id}`}" alt="${product.name}" class="w-full h-40 object-contain mb-4">
                     <div>
                         <h3 class="font-semibold text-sm truncate">${product.name}</h3>
-                        <div class="flex items-center text-xs text-gray-500 mb-1">
-                            <span>By: ${sellerInfo}</span>
-                            <span class="ml-2 px-2 py-0.5 bg-gray-200 rounded-full">${product.type === 'digital' ? 'Digital' : 'Physical'}</span>
-                        </div>
                         <div class="flex items-center my-2">
                             <div class="bg-green-600 text-white text-xs px-2 py-1 rounded-md flex items-center">
                                 ${product.rating || 'N/A'} <i class="fas fa-star text-xs ml-1"></i>
@@ -1054,25 +857,6 @@ const app = initializeApp(firebaseConfig);
                 </div>
             `;
         }
-
-        function renderSellerProductCard(product) {
-            const priceNum = parseFloat(product.price); // Assumes price is already clean number or can be parsed
-            return `
-                <div class="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between transition-shadow duration-300">
-                    <img src="${product.image || `https://picsum.photos/100/100?random=${product.id}`}" alt="${product.name}" class="w-full h-24 object-contain mb-4">
-                    <div>
-                        <h3 class="font-semibold text-sm truncate">${product.name}</h3>
-                        <p class="text-xs text-gray-500">${product.type === 'digital' ? 'Digital' : 'Physical'}</p>
-                        <p class="font-bold text-md">₹${priceNum.toLocaleString('en-IN')}</p>
-                        <div class="flex justify-between mt-2 space-x-2">
-                            <button class="flex-1 bg-blue-500 text-white text-xs font-bold py-1 px-2 rounded hover:bg-blue-600 transition seller-edit-product-btn" data-product-id="${product.id}">Edit</button>
-                            <button class="flex-1 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded hover:bg-red-600 transition seller-delete-product-btn" data-product-id="${product.id}">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
 
         function renderProductCarousel(title, products) {
             const productsHTML = products.map(p => renderProductCard(p, userWishlist.includes(p.id))).join('');
@@ -1089,22 +873,8 @@ const app = initializeApp(firebaseConfig);
         async function renderCategories() {
             onValue(ref(database, 'categories'), (snapshot) => {
                 const categories = snapshot.val() || {};
-                allCategoriesData = Object.keys(categories).map(key => ({ id: key, ...categories[key] }));
-
-                // If no categories from DB, use sample categories
-                const categoriesToRender = allCategoriesData.length > 0 ? allCategoriesData : [
-                    { name: "Mobiles", icon: "fa-mobile-alt" },
-                    { name: "Fashion", icon: "fa-tshirt" },
-                    { name: "Electronics", icon: "fa-laptop" },
-                    { name: "Home", icon: "fa-home" },
-                    { name: "Appliances", icon: "fa-blender" },
-                    { name: "Books", icon: "fa-book" },
-                    { name: "Grocery", icon: "fa-shopping-basket" },
-                    { name: "Toys", icon: "fa-gamepad" },
-                    { name: "Digital", icon: "fa-globe" } // Added for digital products
-                ];
-
-                categoryGrid.innerHTML = categoriesToRender.map(cat => `
+                const categoriesArray = Object.values(categories);
+                categoryGrid.innerHTML = categoriesArray.map(cat => `
                     <div class="flex flex-col items-center p-2 rounded-lg hover:bg-gray-100 cursor-pointer nav-link category-link" data-category="${cat.name}">
                         <i class="fas ${cat.icon} text-3xl text-primary mb-2"></i>
                         <span class="text-sm font-semibold">${cat.name}</span>
@@ -1112,29 +882,21 @@ const app = initializeApp(firebaseConfig);
                 `).join('');
 
                 // Render categories in filter modal
-                filterCategoriesContainer.innerHTML = categoriesToRender.map(cat => `
+                filterCategoriesContainer.innerHTML = categoriesArray.map(cat => `
                     <label class="flex items-center">
                         <input type="checkbox" name="filter-category" value="${cat.name}" class="mr-2 text-primary"> ${cat.name}
                     </label>
                 `).join('');
-
-                // Populate category select for seller product form
-                const sellerProductCategoryOptions = categoriesToRender.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('');
-                sellerProductCategorySelect.innerHTML = sellerProductCategoryOptions;
-                editSellerProductCategorySelect.innerHTML = sellerProductCategoryOptions;
             });
         }
 
-        function getFilteredAndSortedProducts(products, category = null, sortOrder = 'lowToHigh', productType = 'all', searchQuery = '') {
+        function getFilteredAndSortedProducts(products, category = null, sortOrder = 'lowToHigh', searchQuery = '') {
             let filteredProducts = [...products];
 
             if (searchQuery) {
                 const lowerCaseQuery = searchQuery.toLowerCase();
                 filteredProducts = filteredProducts.filter(p =>
-                    p.name.toLowerCase().includes(lowerCaseQuery) ||
-                    (p.description && p.description.toLowerCase().includes(lowerCaseQuery)) ||
-                    (p.category && p.category.toLowerCase().includes(lowerCaseQuery)) ||
-                    (p.brand && p.brand.toLowerCase().includes(lowerCaseQuery))
+                    p.name.toLowerCase().includes(lowerCaseQuery)
                 );
             }
 
@@ -1142,26 +904,19 @@ const app = initializeApp(firebaseConfig);
                 filteredProducts = filteredProducts.filter(p => p.category === category);
             }
 
-            if (productType !== 'all') {
-                filteredProducts = filteredProducts.filter(p => p.type === productType);
-            }
-
             if (sortOrder === 'lowToHigh') {
-                filteredProducts.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+                filteredProducts.sort((a, b) => parseFloat(a.price.replace(/,/g, '')) - parseFloat(b.price.replace(/,/g, '')));
             } else if (sortOrder === 'highToLow') {
-                filteredProducts.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+                filteredProducts.sort((a, b) => parseFloat(b.price.replace(/,/g, '')) - parseFloat(a.price.replace(/,/g, '')));
             }
             return filteredProducts;
         }
 
-        function renderProductListing(category = null, sortOrder = 'lowToHigh', productType = 'all', fromNav = false) {
+        function renderProductListing(category = null, sortOrder = 'lowToHigh', fromNav = false) {
             currentFilterCategory = category;
             currentSortOrder = sortOrder;
-            currentFilterProductType = productType;
 
-            const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-            const productsToRender = getFilteredAndSortedProducts(productsToUse, category, sortOrder, productType);
-
+            const productsToRender = getFilteredAndSortedProducts(allProductsData, category, sortOrder);
             productGrid.innerHTML = productsToRender.map(p => renderProductCard(p, userWishlist.includes(p.id))).join('');
             listingTitle.textContent = category ? category : "All Products";
             listingTotalResultsSpan.textContent = `${productsToRender.length} results found`;
@@ -1170,9 +925,7 @@ const app = initializeApp(firebaseConfig);
 
         function renderSearchResults(query, fromNav = false) {
             currentSearchQuery = query;
-            const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-            const productsToRender = getFilteredAndSortedProducts(productsToUse, null, currentSortOrder, currentFilterProductType, query);
-
+            const productsToRender = getFilteredAndSortedProducts(allProductsData, null, currentSortOrder, query);
             searchProductGrid.innerHTML = productsToRender.map(p => renderProductCard(p, userWishlist.includes(p.id))).join('');
             searchQueryDisplay.textContent = query;
             totalResultsSpan.textContent = `${productsToRender.length} results found`;
@@ -1180,15 +933,12 @@ const app = initializeApp(firebaseConfig);
         }
 
         function renderProductDetails(productId) {
-            const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-            const product = productsToUse.find(p => p.id == productId);
+            const product = allProductsData.find(p => p.id == productId);
             if (!product) {
                 showAlert('Product not found.', 'Error');
                 return;
             }
-            const priceNum = parseFloat(product.price); // Assumes price is already clean number or can be parsed
-            const sellerInfo = product.sellerId ? (allSellersData[product.sellerId]?.sellerName || 'Seller') : 'Platform';
-
+            const priceNum = parseFloat(product.price.replace(/,/g, ''));
 
             productDetailContent.innerHTML = `
                 <div class="w-full lg:w-2/5">
@@ -1196,13 +946,11 @@ const app = initializeApp(firebaseConfig);
                 </div>
                 <div class="w-full lg:w-3/5">
                     <h2 class="text-3xl font-bold">${product.name}</h2>
-                    <p class="text-sm text-gray-600 mb-2">Sold by: <span class="font-semibold">${sellerInfo}</span></p>
-                    <div class="flex items-center mb-3">
+                    <div class="flex items-center my-3">
                         <div class="bg-green-600 text-white text-sm px-3 py-1 rounded-md flex items-center">
                             ${product.rating || 'N/A'} <i class="fas fa-star text-xs ml-1"></i>
                         </div>
-                        <span class="text-gray-600 ml-4">${product.numReviews || 'No'} Ratings & ${product.numReviews || 'No'} Reviews</span>
-                        <span class="ml-4 px-3 py-1 bg-gray-200 text-gray-800 rounded-full text-xs font-semibold">${product.type === 'digital' ? 'Digital Product' : 'Physical Product'}</span>
+                        <span class="text-gray-600 ml-4">${product.reviews || 'No'} Ratings & ${product.numReviews || 'No'} Reviews</span>
                     </div>
                     <p class="text-3xl font-bold text-green-600 my-4">₹${priceNum.toLocaleString('en-IN')}</p>
                     <p class="text-gray-700 mb-6">${product.description || 'A short but engaging description of the product goes here. Highlighting key features and benefits for the customer.'}</p>
@@ -1213,11 +961,10 @@ const app = initializeApp(firebaseConfig);
                     <div class="mt-8 border-t pt-4">
                         <h3 class="font-bold text-lg mb-2">Specifications</h3>
                         <ul class="list-disc list-inside text-gray-600">
-                            <li>Product Type: ${product.type === 'digital' ? 'Digital Download' : 'Physical Item'}</li>
-                            ${product.brand ? `<li>Brand: ${product.brand}</li>` : ''}
-                            ${product.model ? `<li>Model: ${product.model}</li>` : ''}
-                            ${product.weight ? `<li>Weight: ${product.weight}</li>` : ''}
-                            ${product.color ? `<li>Color: ${product.color}</li>` : ''}
+                            <li>Brand: ${product.brand || 'N/A'}</li>
+                            <li>Model: ${product.model || 'N/A'}</li>
+                            <li>Weight: ${product.weight || 'N/A'}</li>
+                            <li>Color: ${product.color || 'N/A'}</li>
                         </ul>
                     </div>
                 </div>
@@ -1227,18 +974,9 @@ const app = initializeApp(firebaseConfig);
         // --- CART FUNCTIONALITY ---
         async function updateCartInFirebase(cartItems) {
             if (currentUser) {
-                if (cartItems.length === 0) {
-                    await remove(ref(database, `carts/${currentUser.uid}`));
-                } else {
-                    const cartRef = ref(database, `carts/${currentUser.uid}`);
-                    await set(cartRef, null); // Clear existing cart
-                    for (const item of cartItems) {
-                        push(cartRef, item);
-                    }
-                }
+                await set(ref(database, `carts/${currentUser.uid}`), cartItems);
             }
         }
-
 
         function renderCart() {
             if (!currentUser) {
@@ -1256,24 +994,23 @@ const app = initializeApp(firebaseConfig);
             }
 
             cartItemsContainer.innerHTML = userCart.map(item => {
-                const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-                const product = productsToUse.find(p => p.id === item.productId);
+                const product = allProductsData.find(p => p.id === item.productId);
                 if (!product) return ''; // Should not happen with good data
-                const priceNum = parseFloat(product.price);
+                const priceNum = parseFloat(product.price.replace(/,/g, ''));
                 return `
                     <div class="flex items-center justify-between border-b py-4">
                         <div class="flex items-center">
                             <img src="${product.image || `https://picsum.photos/80/80?random=${product.id}`}" class="w-20 h-20 object-contain mr-4 rounded-md">
                             <div>
                                 <h4 class="font-semibold">${product.name}</h4>
-                                <p class="text-gray-500">₹${priceNum.toLocaleString('en-IN')} <span class="ml-2 px-1 py-0.5 bg-gray-100 text-xs rounded">${product.type === 'digital' ? 'Digital' : 'Physical'}</span></p>
+                                <p class="text-gray-500">₹${priceNum.toLocaleString('en-IN')}</p>
                             </div>
                         </div>
                         <div class="flex items-center">
-                            <button class="cart-quantity-btn text-gray-600 hover:text-primary transition" data-action="decrement" data-product-id="${item.productId}"><i class="fas fa-minus-circle"></i></button>
+                            <button class="cart-quantity-btn text-gray-600 hover:text-primary transition" data-action="decrement" data-product-id="${product.id}"><i class="fas fa-minus-circle"></i></button>
                             <span class="w-10 text-center mx-2">${item.quantity}</span>
-                            <button class="cart-quantity-btn text-gray-600 hover:text-primary transition" data-action="increment" data-product-id="${item.productId}"><i class="fas fa-plus-circle"></i></button>
-                            <button class="text-red-500 hover:text-red-700 remove-from-cart-btn ml-4" data-product-id="${item.productId}"><i class="fas fa-trash"></i></button>
+                            <button class="cart-quantity-btn text-gray-600 hover:text-primary transition" data-action="increment" data-product-id="${product.id}"><i class="fas fa-plus-circle"></i></button>
+                            <button class="text-red-500 hover:text-red-700 remove-from-cart-btn ml-4" data-product-id="${product.id}"><i class="fas fa-trash"></i></button>
                         </div>
                         <p class="font-bold">₹${(priceNum * item.quantity).toLocaleString('en-IN')}</p>
                     </div>
@@ -1281,10 +1018,9 @@ const app = initializeApp(firebaseConfig);
             }).join('');
 
             const total = userCart.reduce((acc, item) => {
-                const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-                const product = productsToUse.find(p => p.id === item.productId);
+                const product = allProductsData.find(p => p.id === item.productId);
                 if (!product) return acc;
-                const priceNum = parseFloat(product.price);
+                const priceNum = parseFloat(product.price.replace(/,/g, ''));
                 return acc + (priceNum * item.quantity);
             }, 0);
 
@@ -1298,18 +1034,9 @@ const app = initializeApp(firebaseConfig);
         // --- WISHLIST FUNCTIONALITY ---
         async function updateWishlistInFirebase(wishlistItems) {
             if (currentUser) {
-                if (wishlistItems.length === 0) {
-                    await remove(ref(database, `favorites/${currentUser.uid}`));
-                } else {
-                    const favoritesRef = ref(database, `favorites/${currentUser.uid}`);
-                    await set(favoritesRef, null); // Clear existing favorites
-                    for (const productId of wishlistItems) {
-                        push(favoritesRef, { productId: productId });
-                    }
-                }
+                await set(ref(database, `favorites/${currentUser.uid}`), wishlistItems);
             }
         }
-
 
         function renderFavorites() {
             if (!currentUser) {
@@ -1329,8 +1056,7 @@ const app = initializeApp(firebaseConfig);
             }
             favoritesEmptyMessage.classList.add('hidden');
 
-            const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-            const favoritedProducts = productsToUse.filter(p => userWishlist.includes(p.id));
+            const favoritedProducts = allProductsData.filter(p => userWishlist.includes(p.id));
             favoritesContainer.innerHTML = favoritedProducts.map(p => renderProductCard(p, true)).join('');
             wishlistCountSpan.textContent = userWishlist.length.toString();
         }
@@ -1389,9 +1115,7 @@ const app = initializeApp(firebaseConfig);
                     await set(ref(database, `users/${auth.currentUser.uid}/profile`), {
                         email: auth.currentUser.email,
                         name: email.split('@')[0], // Default name
-                        profilePic: 'https://picsum.photos/120/120',
-                        isSeller: false, // Default new user is not a seller
-                        registeredDate: serverTimestamp() // Add registration timestamp
+                        profilePic: 'https://picsum.photos/120/120'
                     });
                 }
                 loginModal.classList.remove('flex');
@@ -1424,49 +1148,32 @@ const app = initializeApp(firebaseConfig);
                         headerProfilePic.src = profile.profilePic || 'https://picsum.photos/40/40';
                         profileNameInput.value = profile.name || '';
                         headerUserName.textContent = profile.name || user.email.split('@')[0];
-                        profileUserEmailSpan.textContent = user.email;
-
-                        isCurrentUserSeller = profile.isSeller || false;
-                        if (isCurrentUserSeller) {
-                            sellerDashboardSection.classList.remove('hidden');
-                            sellerNameInputGroup.classList.remove('hidden');
-                            profileSellerNameInput.value = profile.sellerName || '';
-                            renderSellerProducts(); // Render seller's own products
-                        } else {
-                            sellerDashboardSection.classList.add('hidden');
-                            sellerNameInputGroup.classList.add('hidden');
-                        }
                     } else {
                         // Default values if no profile in DB
                         profilePicDisplay.src = 'https://picsum.photos/120/120';
                         headerProfilePic.src = 'https://picsum.photos/40/40';
                         profileNameInput.value = '';
                         headerUserName.textContent = user.email.split('@')[0];
-                        profileUserEmailSpan.textContent = user.email;
-                        isCurrentUserSeller = false;
-                        sellerDashboardSection.classList.add('hidden');
-                        sellerNameInputGroup.classList.add('hidden');
                     }
+                    profileUserEmailSpan.textContent = user.email;
                 });
 
                 // Listen to cart changes
                 onValue(ref(database, `carts/${user.uid}`), (snapshot) => {
-                    const cartData = snapshot.val();
-                    userCart = cartData ? Object.values(cartData) : [];
+                    userCart = snapshot.val() ? Object.values(snapshot.val()) : [];
                     renderCart(); // Update cart UI when data changes
                 });
 
                 // Listen to wishlist changes
                 onValue(ref(database, `favorites/${user.uid}`), (snapshot) => {
-                    const favData = snapshot.val();
-                    userWishlist = favData ? Object.values(favData).map(item => item.productId) : [];
+                    userWishlist = snapshot.val() ? Object.values(snapshot.val()).map(item => item.productId) : [];
                     renderFavorites(); // Update wishlist UI
                     // Also update heart icons on current product listings
                     document.querySelectorAll('.product-card').forEach(card => {
                         const productId = card.dataset.productId;
                         const heartIcon = card.querySelector('.favorite-toggle i');
                         if (heartIcon) {
-                            if (userWishlist.includes(productId)) { // Compare string IDs
+                            if (userWishlist.includes(parseInt(productId))) {
                                 heartIcon.classList.remove('far');
                                 heartIcon.classList.add('fas');
                                 heartIcon.parentElement.classList.add('text-red-500');
@@ -1510,10 +1217,6 @@ const app = initializeApp(firebaseConfig);
                 profilePicDisplay.src = 'https://picsum.photos/120/120'; // Reset profile page pic
                 profileNameInput.value = '';
                 profileUserEmailSpan.textContent = '';
-                profileSellerNameInput.value = '';
-                isCurrentUserSeller = false;
-                sellerDashboardSection.classList.add('hidden');
-                sellerNameInputGroup.classList.add('hidden');
 
                 // Clear local cart/wishlist
                 userCart = [];
@@ -1548,117 +1251,31 @@ const app = initializeApp(firebaseConfig);
                         `<img src="${banner.image}" class="w-full flex-shrink-0 object-cover" alt="Banner ${index + 1}">`
                     ).join('');
                     updateSliderDots(banners.length); // Create dots after banners load
-                } else {
-                    // Fallback if no banners from DB
-                     heroSlider.innerHTML = `
-                         <img src="https://picsum.photos/1200/400?random=1" class="w-full flex-shrink-0 object-cover" alt="Banner 1">
-                         <img src="https://picsum.photos/1200/400?random=2" class="w-full flex-shrink-0 object-cover" alt="Banner 2">
-                         <img src="https://picsum.photos/1200/400?random=3" class="w-full flex-shrink-0 object-cover" alt="Banner 3">
-                     `;
-                     updateSliderDots(3); // For fallback images
                 }
             }, { onlyOnce: true });
-
-            // Load Sellers for product cards
-            onValue(ref(database, 'users'), (snapshot) => {
-                const users = snapshot.val() || {};
-                allSellersData = {};
-                Object.keys(users).forEach(uid => {
-                    if (users[uid].profile?.isSeller) {
-                        allSellersData[uid] = users[uid].profile;
-                    }
-                });
-                // Re-render products if they depend on seller data
-                if (document.getElementById('home-page').classList.contains('active')) {
-                     renderProductCarousels(); // Re-render carousels
-                }
-                if (document.getElementById('listing-page').classList.contains('active')) {
-                     renderProductListing(currentFilterCategory, currentSortOrder, currentFilterProductType, false);
-                }
-                if (document.getElementById('search-results-page').classList.contains('active')) {
-                     renderSearchResults(currentSearchQuery, false);
-                }
-            });
-
 
             // Load Products
             onValue(ref(database, 'products'), (snapshot) => {
                 const products = snapshot.val() || {};
-                allProductsData = Object.keys(products).map(key => ({ id: key, ...products[key] })); // Ensure product IDs are strings and properties are correct
-                // Convert price to number once, or ensure it's treated as number for sorting/calculations
-                allProductsData.forEach(p => p.price = parseFloat(p.price));
+                allProductsData = Object.keys(products).map(key => ({ id: key, ...products[key] }));
 
-
-                renderProductCarousels(); // Update carousels with fetched data
-
-                // Re-render current page if it's a product listing/search page
-                if (document.getElementById('listing-page').classList.contains('active')) {
-                     renderProductListing(currentFilterCategory, currentSortOrder, currentFilterProductType, false);
-                }
-                if (document.getElementById('search-results-page').classList.contains('active')) {
-                     renderSearchResults(currentSearchQuery, false);
-                }
-                if (isCurrentUserSeller && currentUser) {
-                    renderSellerProducts(); // Update seller's own product list
-                }
-            });
+                const productCarouselHTML = {};
+                // Group products by category or create general carousels
+                const categoriesFromProducts = [...new Set(allProductsData.map(p => p.category))];
+                categoriesFromProducts.forEach(cat => {
+                    const productsInCategory = allProductsData.filter(p => p.category === cat);
+                    productCarouselHTML[cat] = renderProductCarousel(cat, productsInCategory);
+                });
+                 // Example: Also add "Top Deals" or "Featured" if you have a flag in product data
+                 productCarouselsDiv.innerHTML = Object.values(productCarouselHTML).join('');
+            }, { onlyOnce: true });
 
             renderCategories(); // Categories will always render based on DB
-        }
-
-        function renderProductCarousels() {
-            let productsToRender = [];
-            let categoriesFromProducts = [];
-            let isSampleData = false;
-
-            if (allProductsData.length > 0) {
-                productsToRender = allProductsData;
-                categoriesFromProducts = [...new Set(allProductsData.map(p => p.category))].filter(Boolean);
-            } else {
-                productsToRender = Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-                categoriesFromProducts = Object.keys(SAMPLE_PRODUCTS_CAROUSEL_DATA);
-                isSampleData = true;
-            }
-
-            const carouselContent = {};
-            productsToRender.forEach(p => {
-                const categoryName = p.category || 'Uncategorized';
-                if (!carouselContent[categoryName]) {
-                    carouselContent[categoryName] = [];
-                }
-                carouselContent[categoryName].push(p);
-            });
-
-            productCarouselsDiv.innerHTML = Object.entries(carouselContent)
-                .map(([title, products]) => renderProductCarousel(title, products))
-                .join('');
-
-            // Add message if displaying sample data
-            if (isSampleData) {
-                const sampleMessage = document.createElement('p');
-                sampleMessage.className = 'text-center text-gray-500 mt-8 text-sm';
-                sampleMessage.textContent = 'No products found in your database. Displaying sample products. Please use the admin panel to add your own!';
-                productCarouselsDiv.appendChild(sampleMessage);
-            }
         }
 
         // --- HOME PAGE SLIDER ---
         let currentIndex = 0;
         let sliderInterval;
-
-        // Define updateActiveDot first
-        function updateActiveDot() {
-            const dots = sliderDotsContainer.children;
-            Array.from(dots).forEach((dot, index) => {
-                if (index === currentIndex) {
-                    dot.classList.add('bg-white');
-                    dot.classList.remove('bg-white/50');
-                } else {
-                    dot.classList.remove('bg-white');
-                    dot.classList.add('bg-white/50');
-                }
-            });
-        }
 
         function updateSlider() {
             const slides = heroSlider.children;
@@ -1682,6 +1299,19 @@ const app = initializeApp(firebaseConfig);
             updateActiveDot();
         }
 
+        function updateActiveDot() {
+            const dots = sliderDotsContainer.children;
+            Array.from(dots).forEach((dot, index) => {
+                if (index === currentIndex) {
+                    dot.classList.add('bg-white');
+                    dot.classList.remove('bg-white/50');
+                } else {
+                    dot.classList.add('bg-white/50');
+                    dot.classList.remove('bg-white');
+                }
+            });
+        }
+
         function startSliderInterval() {
             sliderInterval = setInterval(() => {
                 const slides = heroSlider.children;
@@ -1696,6 +1326,20 @@ const app = initializeApp(firebaseConfig);
             startSliderInterval();
         }
 
+        document.getElementById('next-slide').addEventListener('click', () => {
+            const slides = heroSlider.children;
+            if (slides.length === 0) return;
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateSlider();
+            resetSliderInterval();
+        });
+        document.getElementById('prev-slide').addEventListener('click', () => {
+            const slides = heroSlider.children;
+            if (slides.length === 0) return;
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateSlider();
+            resetSliderInterval();
+        });
         startSliderInterval(); // Start on page load
 
 
@@ -1719,7 +1363,7 @@ const app = initializeApp(firebaseConfig);
                 const pageId = navLink.dataset.page;
                 if (pageId) {
                     if (navLink.classList.contains('category-link')) {
-                        renderProductListing(navLink.dataset.category, currentSortOrder, currentFilterProductType, true);
+                        renderProductListing(navLink.dataset.category, currentSortOrder, true);
                     } else if (pageId === 'home') {
                         showPage('home');
                         resetSliderInterval(); // Ensure slider restarts correctly
@@ -1735,7 +1379,7 @@ const app = initializeApp(firebaseConfig);
                     showAlert('Please log in to add items to cart.', 'Login Required');
                     return;
                 }
-                const productId = addToCartBtn.dataset.productId; // Keep as string
+                const productId = parseInt(addToCartBtn.dataset.productId);
                 const existingItem = userCart.find(item => item.productId === productId);
                 if (existingItem) {
                     existingItem.quantity++;
@@ -1752,7 +1396,7 @@ const app = initializeApp(firebaseConfig);
                     showAlert('Please log in to buy items.', 'Login Required');
                     return;
                 }
-                const productId = buyNowBtn.dataset.productId; // Keep as string
+                const productId = parseInt(buyNowBtn.dataset.productId);
                 // Directly add to cart, then navigate to checkout
                 const existingItem = userCart.find(item => item.productId === productId);
                 if (existingItem) {
@@ -1766,14 +1410,14 @@ const app = initializeApp(firebaseConfig);
 
             const removeFromCartBtn = e.target.closest('.remove-from-cart-btn');
             if (removeFromCartBtn) {
-                const productId = removeFromCartBtn.dataset.productId;
+                const productId = parseInt(removeFromCartBtn.dataset.productId);
                 userCart = userCart.filter(item => item.productId !== productId);
                 await updateCartInFirebase(userCart);
             }
 
             const cartQuantityBtn = e.target.closest('.cart-quantity-btn');
             if (cartQuantityBtn) {
-                const productId = cartQuantityBtn.dataset.productId;
+                const productId = parseInt(cartQuantityBtn.dataset.productId);
                 const action = cartQuantityBtn.dataset.action;
                 const itemIndex = userCart.findIndex(item => item.productId === productId);
 
@@ -1800,7 +1444,7 @@ const app = initializeApp(firebaseConfig);
                     showAlert('Please log in to add items to wishlist.', 'Login Required');
                     return;
                 }
-                const productId = favoriteToggle.dataset.productId; // Keep as string
+                const productId = parseInt(favoriteToggle.dataset.productId);
                 const icon = favoriteToggle.querySelector('i');
 
                 if (userWishlist.includes(productId)) {
@@ -1818,7 +1462,7 @@ const app = initializeApp(firebaseConfig);
                     favoriteToggle.classList.add('text-red-500');
                     showAlert('Added to wishlist!', 'Wishlist');
                 }
-                await updateWishlistInFirebase(userWishlist); // Store as simple array of IDs
+                await updateWishlistInFirebase(userWishlist.map(id => ({ productId: id }))); // Store as objects in DB
                 renderFavorites(); // Re-render favorites page if active
             }
         });
@@ -1845,17 +1489,14 @@ const app = initializeApp(firebaseConfig);
         applyFilterSortBtn.addEventListener('click', () => {
             const selectedSort = document.querySelector('input[name="sort-price"]:checked')?.value || 'lowToHigh';
             const selectedCategories = Array.from(document.querySelectorAll('input[name="filter-category"]:checked')).map(cb => cb.value);
-            const selectedProductType = document.querySelector('input[name="filter-product-type"]:checked')?.value || 'all';
-
 
             // For simplicity, if multiple categories are selected, it filters by the first one or shows all if none.
             const categoryToFilter = selectedCategories.length > 0 ? selectedCategories[0] : null;
 
             if (document.getElementById('search-results-page').classList.contains('active')) {
-                currentFilterProductType = selectedProductType; // Apply type filter to search results
                 renderSearchResults(currentSearchQuery, false); // Filter search results
             } else {
-                renderProductListing(categoryToFilter, selectedSort, selectedProductType, false); // Filter general listing
+                renderProductListing(categoryToFilter, selectedSort, false); // Filter general listing
             }
             filterSortModal.classList.remove('flex');
         });
@@ -1876,7 +1517,7 @@ const app = initializeApp(firebaseConfig);
                     showAlert('Profile picture updated successfully!');
                 } catch (error) {
                     console.error('Error uploading profile picture:', error);
-                    showAlert('Failed to upload profile picture. Please try again.', 'Error');
+                    showAlert('Failed to upload profile picture. Please try again.');
                 }
             }
         });
@@ -1887,18 +1528,13 @@ const app = initializeApp(firebaseConfig);
                 return;
             }
             const newName = profileNameInput.value.trim();
-            const newSellerName = profileSellerNameInput.value.trim();
             if (newName) {
                 try {
-                    const updates = { name: newName };
-                    if (isCurrentUserSeller) {
-                        updates.sellerName = newSellerName;
-                    }
-                    await update(ref(database, `users/${currentUser.uid}/profile`), updates);
-                    showAlert('Profile updated successfully!', 'Success');
+                    await update(ref(database, `users/${currentUser.uid}/profile`), { name: newName });
+                    showAlert('Profile name updated successfully!');
                 } catch (error) {
-                    console.error('Error updating profile:', error);
-                    showAlert('Failed to update profile. Please try again.', 'Error');
+                    console.error('Error updating profile name:', error);
+                    showAlert('Failed to update profile name. Please try again.');
                 }
             } else {
                 showAlert('Name cannot be empty.', 'Validation Error');
@@ -1910,6 +1546,7 @@ const app = initializeApp(firebaseConfig);
                 // Show login/signup view if not logged in
                 document.getElementById('profile-view').classList.add('hidden');
                 document.getElementById('login-signup-view').classList.remove('hidden');
+                // You might want to render the login modal directly here or a simplified version
                 document.getElementById('login-signup-view').innerHTML = `
                     <h2 class="text-2xl font-bold mb-4">Login or Sign Up</h2>
                     <p class="mb-6 text-gray-600">To access your profile, please log in or create an account.</p>
@@ -1920,143 +1557,9 @@ const app = initializeApp(firebaseConfig);
                 document.getElementById('profile-view').classList.remove('hidden');
                 document.getElementById('login-signup-view').classList.add('hidden');
                 // Data is already fetched by onAuthStateChanged listener, just ensure fields are populated
+                // This is handled by the onValue listener for `users/${user.uid}/profile`
             }
         }
-
-        // --- SELLER PRODUCT MANAGEMENT ---
-        sellerAddProductForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser || !isCurrentUserSeller) {
-                showAlert('You must be logged in as a seller to add products.', 'Permission Denied');
-                return;
-            }
-
-            const newProduct = {
-                name: sellerProductNameInput.value.trim(),
-                description: sellerProductDescriptionInput.value.trim(),
-                price: parseFloat(sellerProductPriceInput.value).toFixed(2),
-                category: sellerProductCategorySelect.value,
-                type: sellerProductTypeSelect.value,
-                image: sellerProductImageUrlInput.value.trim(),
-                sellerId: currentUser.uid,
-                rating: 0, // Default rating
-                numReviews: 0, // Default reviews
-                createdAt: serverTimestamp()
-            };
-
-            try {
-                const newProductRef = push(ref(database, 'products'));
-                const newProductId = newProductRef.key;
-                await set(ref(database, `products/${newProductId}`), { id: newProductId, ...newProduct });
-                showAlert('Product added successfully!', 'Success');
-                sellerAddProductForm.reset();
-            }
-            catch (error) {
-                console.error('Error adding product:', error);
-                showAlert('Failed to add product. Please try again.', 'Error');
-            }
-        });
-
-        function renderSellerProducts() {
-            if (!currentUser || !isCurrentUserSeller) {
-                sellerProductsList.innerHTML = '';
-                sellerProductsEmptyMessage.classList.remove('hidden');
-                return;
-            }
-            // Use allProductsData directly, it's globally synced
-            const sellersProducts = allProductsData.filter(p => p.sellerId === currentUser.uid);
-
-            if (sellersProducts.length === 0) {
-                sellerProductsList.innerHTML = '';
-                sellerProductsEmptyMessage.classList.remove('hidden');
-            } else {
-                sellerProductsEmptyMessage.classList.add('hidden');
-                sellerProductsList.innerHTML = sellersProducts.map(renderSellerProductCard).join('');
-            }
-        }
-
-        sellerProductsList.addEventListener('click', async (e) => {
-            const editBtn = e.target.closest('.seller-edit-product-btn');
-            const deleteBtn = e.target.closest('.seller-delete-product-btn');
-
-            if (editBtn) {
-                const productId = editBtn.dataset.productId;
-                openSellerProductEditForm(productId);
-            } else if (deleteBtn) {
-                const productId = deleteBtn.dataset.productId;
-                showAlert('Are you sure you want to delete this product?', 'Confirm Delete', true, async () => {
-                    await deleteSellerProduct(productId);
-                });
-            }
-        });
-
-        async function openSellerProductEditForm(productId) {
-            const product = allProductsData.find(p => p.id === productId && p.sellerId === currentUser.uid);
-            if (!product) {
-                showAlert('Product not found or you do not have permission to edit it.', 'Error');
-                return;
-            }
-
-            editingSellerProductId = productId;
-            sellerEditProductFormTitle.textContent = `Edit Product: ${product.name}`;
-
-            editSellerProductNameInput.value = product.name || '';
-            editSellerProductDescriptionInput.value = product.description || '';
-            editSellerProductPriceInput.value = product.price || '';
-            editSellerProductCategorySelect.value = product.category || '';
-            editSellerProductTypeSelect.value = product.type || 'physical';
-            editSellerProductImageUrlInput.value = product.image || '';
-
-            sellerProductEditModal.classList.add('flex');
-        }
-
-        sellerEditProductForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser || !isCurrentUserSeller || !editingSellerProductId) {
-                showAlert('You must be logged in as a seller to edit products.', 'Permission Denied');
-                return;
-            }
-
-            const updatedProduct = {
-                name: editSellerProductNameInput.value.trim(),
-                description: editSellerProductDescriptionInput.value.trim(),
-                price: parseFloat(editSellerProductPriceInput.value).toFixed(2),
-                category: editSellerProductCategorySelect.value,
-                type: editSellerProductTypeSelect.value,
-                image: editSellerProductImageUrlInput.value.trim(),
-            };
-
-            try {
-                await update(ref(database, `products/${editingSellerProductId}`), updatedProduct);
-                showAlert('Product updated successfully!', 'Success');
-                sellerProductEditModal.classList.remove('flex');
-                editingSellerProductId = null; // Clear editing state
-            } catch (error) {
-                console.error('Error updating product:', error);
-                showAlert('Failed to update product. Please try again.', 'Error');
-            }
-        });
-
-        async function deleteSellerProduct(productId) {
-            if (!currentUser || !isCurrentUserSeller) {
-                showAlert('You must be logged in as a seller to delete products.', 'Permission Denied');
-                return;
-            }
-            const product = allProductsData.find(p => p.id === productId);
-            if (!product || product.sellerId !== currentUser.uid) {
-                showAlert('Product not found or you do not have permission to delete it.', 'Error');
-                return;
-            }
-
-            try {
-                await remove(ref(database, `products/${productId}`));
-                showAlert('Product deleted successfully!', 'Success');
-            } catch (error) {
-                console.error('Error deleting product:', error);
-                showAlert('Failed to delete product. Please try again.', 'Error');
-            }
-        }
-
 
         // --- MY ORDERS PAGE ---
         function renderMyOrders() {
@@ -2142,22 +1645,6 @@ const app = initializeApp(firebaseConfig);
         });
 
         // --- DELIVERY ADDRESS & CHECKOUT ---
-        function checkCartForDigitalProducts() {
-            const allDigital = userCart.every(item => {
-                const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-                const product = productsToUse.find(p => p.id === item.productId);
-                return product && product.type === 'digital';
-            });
-
-            if (allDigital && userCart.length > 0) {
-                deliveryAddressFormContainer.classList.add('hidden');
-                digitalCheckoutMessage.classList.remove('hidden');
-            } else {
-                deliveryAddressFormContainer.classList.remove('hidden');
-                digitalCheckoutMessage.classList.add('hidden');
-            }
-        }
-
         pincodeInput.addEventListener('input', async () => {
             const pincode = pincodeInput.value;
             if (pincode.length === 6) {
@@ -2204,10 +1691,8 @@ const app = initializeApp(firebaseConfig);
 
             const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
             const totalAmount = userCart.reduce((acc, item) => {
-                const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-                const product = productsToUse.find(p => p.id === item.productId);
-                if (!product) return acc; // Handle case where product might be missing
-                return acc + (parseFloat(product.price) * item.quantity);
+                const product = allProductsData.find(p => p.id === item.productId);
+                return acc + (parseFloat(product.price.replace(/,/g, '')) * item.quantity);
             }, 0);
 
             if (paymentMethod === 'Online') {
@@ -2215,63 +1700,24 @@ const app = initializeApp(firebaseConfig);
                 // In a real app, this would initiate a PayPal checkout flow
                 showAlert('Online payment selected. Integrating PayPal (dummy action).', 'Payment');
                 // Assume successful PayPal payment for now
-                setTimeout(() => placeOrder(addressDetails, totalAmount, paymentMethod, 'physical'), 1000);
+                setTimeout(() => placeOrder(addressDetails, totalAmount, paymentMethod), 1000);
             } else {
-                placeOrder(addressDetails, totalAmount, paymentMethod, 'physical');
+                placeOrder(addressDetails, totalAmount, paymentMethod);
             }
         });
 
-        placeDigitalOrderBtn.addEventListener('click', async () => {
-             if (!currentUser) {
-                showAlert('Please log in to place an order.', 'Login Required');
-                return;
-            }
-
-            if (userCart.length === 0) {
-                showAlert('Your cart is empty. Please add items before placing an order.', 'Empty Cart');
-                return;
-            }
-            const totalAmount = userCart.reduce((acc, item) => {
-                const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-                const product = productsToUse.find(p => p.id === item.productId);
-                if (!product) return acc;
-                return acc + (parseFloat(product.price) * item.quantity);
-            }, 0);
-            const paymentMethod = document.querySelector('input[name="payment-method-digital"]:checked').value;
-
-            // For digital products, address is not needed, pass a placeholder
-            const addressDetails = {
-                fullName: currentUser.displayName || currentUser.email.split('@')[0],
-                email: currentUser.email,
-                message: "No physical address needed for digital products."
-            };
-
-            if (paymentMethod === 'Online') {
-                showAlert('Online payment selected for digital products. Integrating PayPal (dummy action).', 'Payment');
-                setTimeout(() => placeOrder(addressDetails, totalAmount, paymentMethod, 'digital'), 1000);
-            } else {
-                // COD not applicable for digital products in real scenario, but based on UI, only online is shown.
-                // If COD were an option, it would require a different flow.
-                 showAlert('For digital products, only online payment is supported.', 'Payment Method Error');
-            }
-        });
-
-
-        async function placeOrder(address, total, paymentMethod, orderType) {
+        async function placeOrder(address, total, paymentMethod) {
             if (!currentUser) return;
 
             const orderId = `ORD${Date.now()}`;
-            const productsToUse = allProductsData.length > 0 ? allProductsData : Object.values(SAMPLE_PRODUCTS_CAROUSEL_DATA).flat();
-
             const orderItems = userCart.map(item => {
-                const product = productsToUse.find(p => p.id === item.productId);
+                const product = allProductsData.find(p => p.id === item.productId);
                 return {
                     productId: item.productId,
                     name: product.name,
                     image: product.image,
                     price: product.price,
                     quantity: item.quantity,
-                    type: product.type // Include product type in order item
                 };
             });
 
@@ -2280,15 +1726,14 @@ const app = initializeApp(firebaseConfig);
                 userId: currentUser.uid,
                 orderDate: Date.now(),
                 items: orderItems,
-                address: address, // Will be simplified for digital orders
+                address: address,
                 total: total,
                 paymentMethod: paymentMethod,
                 status: 'placed', // initial status
                 statusHistory: {
                     placed: Date.now()
                 },
-                statusMessage: 'Your order has been placed successfully.',
-                orderType: orderType // 'physical' or 'digital'
+                statusMessage: 'Your order has been placed successfully.'
             };
 
             try {
@@ -2320,6 +1765,5 @@ const app = initializeApp(firebaseConfig);
         init();
 
     </script>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>

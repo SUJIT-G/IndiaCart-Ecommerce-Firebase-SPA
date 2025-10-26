@@ -1,3 +1,4 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
     getAuth,
@@ -22,6 +23,15 @@ import {
     getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+// --- IMPORTANT FIREBASE CONFIGURATION ---
+// You MUST replace the placeholder values below with your own Firebase project's configuration.
+// To get these values:
+// 1. Go to your Firebase project: https://console.firebase.google.com/
+// 2. Click on the project you are using (e.g., 'indiacart-e-commerce-app').
+// 3. In the project overview, click the gear icon (Project settings) next to 'Project Overview'.
+// 4. In the 'General' tab, scroll down to the 'Your apps' section.
+// 5. If you haven't created a web app, click the '</>' icon to add one.
+// 6. You will see an object called 'firebaseConfig'. Copy the values from there and paste them here.
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -1149,6 +1159,19 @@ async function placeOrder(address, total, paymentMethod) {
 
 // --- INITIALIZATION ---
 function init() {
+    // Check if Firebase config is still using placeholders
+    if (firebaseConfig.apiKey.startsWith("REPLACE_WITH")) {
+        document.body.innerHTML = `
+            <div style="padding: 2rem; text-align: center; font-family: sans-serif; background-color: #fff1f2; color: #9f1239; height: 100vh; display: flex; align-items: center; justify-content: center;">
+                <div>
+                    <h1 style="font-size: 1.5rem; font-weight: bold;">Configuration Error</h1>
+                    <p style="margin-top: 1rem;">The Firebase configuration is missing. Please open the <strong>index.tsx</strong> file and replace the placeholder values with your actual Firebase project credentials.</p>
+                </div>
+            </div>
+        `;
+        return; // Stop the app from initializing further
+    }
+
     loadInitialData();
     renderCart(); // Initial render for cart, will update on auth state change
     renderFavorites(); // Initial render for favorites
